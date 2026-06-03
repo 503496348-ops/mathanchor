@@ -293,50 +293,52 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
   }
 
   Future<void> _scanAndOpenResult() async {
-    if (_isScanning) {
-      return;
-    }
+    if (_isScanning) return;
 
     setState(() {
       _isScanning = true;
     });
 
-    final File? scannedFile = await _scannerService.startScanning(context);
+    try {
+      // 1. scanner_service 返回 String 路径，用 dynamic 接收
+      final dynamic scannedPath = await _scannerService.startScanning(context);
 
-    if (!mounted) {
-      return;
+      if (!mounted) return;
+      if (scannedPath == null) return; // 用户取消了
+
+      // 2. 路径字符串 → File 对象
+      final File scannedFile = File(scannedPath as String);
+
+      // 3. 进入裁剪页面
+      final File? croppedFile = await Navigator.of(context).push<File>(
+        MaterialPageRoute(
+          builder: (_) => EnhancedCropPage(imageFile: scannedFile),
+        ),
+      );
+
+      if (!mounted) return;
+      if (croppedFile == null) return;
+
+      // 4. 进入结果页面
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => BeautifulResultPage(image: croppedFile),
+        ),
+      );
+    } catch (e) {
+      debugPrint('扫描流程异常: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('拍照/选图失败: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isScanning = false;
+        });
+      }
     }
-
-    if (scannedFile == null) {
-      setState(() {
-        _isScanning = false;
-      });
-      return;
-    }
-
-    setState(() {
-      _isScanning = false;
-    });
-
-    final File? croppedFile = await Navigator.of(context).push<File>(
-      MaterialPageRoute(
-        builder: (_) => EnhancedCropPage(imageFile: scannedFile),
-      ),
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    if (croppedFile == null) {
-      return;
-    }
-
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => BeautifulResultPage(image: croppedFile),
-      ),
-    );
   }
 
   @override

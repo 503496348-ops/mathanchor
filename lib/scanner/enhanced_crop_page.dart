@@ -34,15 +34,24 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
         title: const Text('调整识别范围', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.blue),
-            onPressed: _processCrop,
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: SizedBox(
+              width: 56,
+              height: 56,
+              child: IconButton(
+                icon: const Icon(Icons.check, color: Colors.blue, size: 32),
+                onPressed: _processCrop,
+                tooltip: '确认裁剪',
+              ),
+            ),
           ),
         ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onPanStart: (details) {
               if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) return;
               final relativeX =
