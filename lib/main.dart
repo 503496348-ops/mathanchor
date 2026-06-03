@@ -364,6 +364,8 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     const SizedBox(height: 18),
                     _buildCameraHero(),
                     const SizedBox(height: 14),
+                _buildGeoChatCard(),
+                const SizedBox(height: 14),
                 _buildToolboxCard(),
                 const SizedBox(height: 16),
                 Row(
@@ -560,7 +562,7 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
               mainAxisSpacing: 10,
               childAspectRatio: 1.5,
             ),
-            itemCount: 7,
+            itemCount: 6,
             itemBuilder: (BuildContext context, int index) {
               final List<Map<String, dynamic>> tools = <Map<String, dynamic>>[
                 <String, dynamic>{
@@ -631,17 +633,6 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     );
                   },
                 },
-                <String, dynamic>{
-                  'icon': Icons.auto_awesome,
-                  'name': 'GeoGebra 助手',
-                  'onTap': () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const GeogebraChatPage(),
-                      ),
-                    );
-                  },
-                },
               ];
 
               final Map<String, dynamic> tool = tools[index];
@@ -689,6 +680,80 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGeoChatCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const GeogebraChatPage()),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF3F51B5), Color(0xFF7986CB)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: cs.shadow.withValues(alpha: 0.10),
+              blurRadius: 12,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Text(
+                    'GeoChat',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'AI 驱动的几何画板，用自然语言操控 GeoGebra',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.white.withValues(alpha: 0.7),
+            ),
+          ],
+        ),
       ),
     );
   }

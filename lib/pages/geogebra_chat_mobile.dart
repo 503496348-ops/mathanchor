@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -31,6 +32,7 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
   final ScrollController _scrollCtrl = ScrollController();
   final List<ChatBubble> _bubbles = [];
   bool _isLoading = false;
+  double _chatHeightFraction = 4.0 / 7.0;
 
   @override
   void initState() {
@@ -60,25 +62,67 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
         },
       );
 
-      // 优先用数学工具箱已解压的本地 GeoGebra 文件（秒开），否则用 CDN
-      final localPath =
-          '${(await getApplicationDocumentsDirectory()).path}/geogebra/graphing.html';
-      final useLocal = File(localPath).existsSync();
+      // 自动解压本地 GeoGebra 离线文件（与数学工具箱一致），不再依赖 CDN
+      final localPath = await _ensureLocalFiles();
 
-      if (useLocal) {
-        ctrl.setNavigationDelegate(
-          NavigationDelegate(
-            onPageFinished: (_) => _injectBridge(ctrl),
-          ),
-        );
-        await ctrl.loadFile(localPath);
-      } else {
-        await ctrl.loadHtmlString(_buildGgbHtml());
-      }
+      ctrl.setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (_) => _injectBridge(ctrl),
+          onWebResourceError: (_) {
+            if (mounted) setState(() => _ggbLoading = false);
+          },
+        ),
+      );
+      await ctrl.loadFile(localPath);
     } catch (e) {
       debugPrint('[GeoChat] Init error: $e');
+      // 本地文件加载失败时，回退到 CDN
+      await _fallbackToCdn();
+    }
+  }
+
+  /// 回退到 CDN 加载 GeoGebra（仅在本地文件不可用时）
+  Future<void> _fallbackToCdn() async {
+    try {
+      if (_ggbController == null) return;
+      await _ggbController!.loadHtmlString(_buildGgbHtml());
+    } catch (e) {
+      debugPrint('[GeoChat] CDN fallback error: $e');
       if (mounted) setState(() => _ggbLoading = false);
     }
+  }
+
+  /// 自动解压本地 GeoGebra 离线文件，与数学工具箱共用同一份
+  Future<String> _ensureLocalFiles() async {
+    final dir = Directory(
+        '${(await getApplicationDocumentsDirectory()).path}/geogebra');
+
+    if (await dir.exists()) {
+      final html = File('${dir.path}/graphing.html');
+      final web3d = File('${dir.path}/web3d/web3d.nocache.js');
+      if (await html.exists() && await web3d.exists()) return html.path;
+      // 文件不完整，删除重新解压
+      await dir.delete(recursive: true);
+    }
+
+    await dir.create(recursive: true);
+
+    final manifest =
+        await rootBundle.loadString('assets/geogebra/file_manifest.txt');
+    final files = manifest
+        .split('\n')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    for (final file in files) {
+      final data = await rootBundle.load('assets/geogebra/$file');
+      final target = File('${dir.path}/$file');
+      await target.parent.create(recursive: true);
+      await target.writeAsBytes(data.buffer.asUint8List());
+    }
+
+    return '${dir.path}/graphing.html';
   }
 
   /// 注入 JS Bridge —— 仅本地 GeoGebra 5.4 文件需要（CDN 版 HTML 已内置）
@@ -90,6 +134,10 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
   function ready(api) {
     ggb = api;
     window._ggbBridgeReady = true;
+    // 隐藏 GeoGebra 自带菜单栏、工具栏、代数输入（保持画布纯净）
+    try { if (typeof ggb.setShowMenuBar === 'function') ggb.setShowMenuBar(false); } catch(e) {}
+    try { if (typeof ggb.setShowToolBar === 'function') ggb.setShowToolBar(false); } catch(e) {}
+    try { if (typeof ggb.setShowAlgebraInput === 'function') ggb.setShowAlgebraInput(false); } catch(e) {}
     window._ggbBridgeCallback = function(msg) {
       var p = msg.split('|'), t = p[0], id = p[1], pl = p.slice(2).join('|');
       try {
@@ -202,6 +250,11 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
     var type = parts[0], msgId = parts[1];
     var payload = parts.length > 2 ? parts.slice(2).join('|') : '';
     try {
+      // 确保 API 已就绪再执行
+      if (!ggbApp || typeof ggbApp.evalCommandGetLabels !== 'function') {
+        GgbBridge.postMessage('error|' + msgId + '|GeoGebra API 尚未就绪，请稍后重试');
+        return;
+      }
       var result = '';
       switch(type) {
         case 'evalCommand':
@@ -234,7 +287,21 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
   };
 
   ggbApp.inject('ggb', 'preferHTML5');
-  GgbBridge.postMessage('ready|0|{}');
+
+  // 等待 applet API 真正就绪后再通知 Flutter（最多等待 20 秒）
+  var _apiAttempts = 0;
+  (function waitForApi() {
+    if (ggbApp && typeof ggbApp.evalCommandGetLabels === 'function') {
+      GgbBridge.postMessage('ready|0|{}');
+      return;
+    }
+    _apiAttempts++;
+    if (_apiAttempts > 100) {
+      GgbBridge.postMessage('error|0|GeoGebra 加载超时，请检查网络连接');
+      return;
+    }
+    setTimeout(waitForApi, 200);
+  })();
 </script>
 </body>
 </html>
@@ -386,6 +453,11 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
   }
 
   void _clearCanvas() {
+    if (_isLoading) {
+      _agent.cancel();
+      setState(() => _isLoading = false);
+      return;
+    }
     _bridge.reset();
     setState(() => _bubbles.clear());
   }
@@ -407,127 +479,160 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      body: Column(
-        children: [
-          // GeoGebra 画布区域
-          Expanded(
-            flex: 3,
-            child: Stack(
-              children: [
-                if (_ggbController != null)
-                  Positioned.fill(
-                    child: WebViewWidget(controller: _ggbController!),
-                  ),
-                if (_ggbLoading)
-                  const Center(child: CircularProgressIndicator()),
-                // GeoGebra ready 标记
-                Positioned(
-                  top: MediaQuery.of(context).padding.top + 8,
-                  left: 8,
-                  right: 8,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.black38,
-                        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final totalHeight = constraints.maxHeight;
+          const dividerHeight = 24.0;
+          final availableHeight = (totalHeight - dividerHeight).clamp(0.0, totalHeight);
+          final canvasHeight = (availableHeight * (1 - _chatHeightFraction)).clamp(0.0, availableHeight);
+          final chatHeight = (availableHeight * _chatHeightFraction).clamp(0.0, availableHeight);
+
+          return Column(
+            children: [
+              // GeoGebra 画布区域
+              SizedBox(
+                height: canvasHeight,
+                child: Stack(
+                  children: [
+                    if (_ggbController != null)
+                      Positioned.fill(
+                        child: WebViewWidget(controller: _ggbController!),
                       ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _ggbReady ? Colors.green : Colors.orange,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          _ggbReady ? '就绪' : '等待...',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
+                    if (_ggbLoading)
+                      const Center(child: CircularProgressIndicator()),
+                    // GeoGebra ready 标记
+                    Positioned(
+                      top: MediaQuery.of(context).padding.top + 20,
+                      left: 8,
+                      right: 8,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.black38,
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _ggbReady ? Colors.green : Colors.orange,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              _ggbReady ? '就绪' : '等待...',
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          IconButton(
+                            onPressed: _undoLast,
+                            icon: const Icon(Icons.undo, color: Colors.white),
+                            tooltip: '撤销',
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.black38,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _clearCanvas,
+                            icon: Icon(
+                              _isLoading ? Icons.stop : Icons.delete_outline,
+                              color: Colors.white,
+                            ),
+                            tooltip: _isLoading ? '中止任务' : '清空画布',
+                            style: IconButton.styleFrom(
+                              backgroundColor:
+                                  _isLoading ? Colors.red.withValues(alpha: 0.7) : Colors.black38,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      IconButton(
-                        onPressed: _undoLast,
-                        icon: const Icon(Icons.undo, color: Colors.white),
-                        tooltip: '撤销',
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.black38,
-                        ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // 可拖拽分隔栏
+              GestureDetector(
+                onVerticalDragUpdate: (details) {
+                  if (availableHeight <= 0) return;
+                  setState(() {
+                    _chatHeightFraction -= details.delta.dy / availableHeight;
+                    _chatHeightFraction = _chatHeightFraction.clamp(0.15, 0.85);
+                  });
+                },
+                child: Container(
+                  height: dividerHeight,
+                  color: cs.surface,
+                  child: Center(
+                    child: Container(
+                      width: 32,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: cs.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
                       ),
-                      IconButton(
-                        onPressed: _clearCanvas,
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.white,
-                        ),
-                        tooltip: '清空画布',
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.black38,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          // 分隔线
-          Container(height: 1, color: cs.outlineVariant),
-
-          // 聊天区域
-          Expanded(
-            flex: 4,
-            child: Column(
-              children: [
-                // 标题栏
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  color: cs.primaryContainer.withValues(alpha: 0.3),
-                  child: Row(
-                    children: [
-                      Icon(Icons.draw, size: 18, color: cs.primary),
-                      const SizedBox(width: 8),
-                      Text(
-                        '对话绘图',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: cs.primary,
-                        ),
+              // 聊天区域
+              SizedBox(
+                height: chatHeight,
+                child: Column(
+                  children: [
+                    // 标题栏
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                    ],
-                  ),
-                ),
+                      color: cs.primaryContainer.withValues(alpha: 0.3),
+                      child: Row(
+                        children: [
+                          Icon(Icons.draw, size: 18, color: cs.primary),
+                          const SizedBox(width: 8),
+                          Text(
+                            '对话绘图',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: cs.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                // 消息列表
-                Expanded(
-                  child: _bubbles.isEmpty
-                      ? _buildEmptyState(cs)
-                      : ListView.builder(
-                          controller: _scrollCtrl,
-                          padding: const EdgeInsets.all(12),
-                          itemCount: _bubbles.length,
-                          itemBuilder: (_, i) => _buildBubble(_bubbles[i], cs),
-                        ),
-                ),
+                    // 消息列表
+                    Expanded(
+                      child: _bubbles.isEmpty
+                          ? _buildEmptyState(cs)
+                          : ListView.builder(
+                              controller: _scrollCtrl,
+                              padding: const EdgeInsets.all(12),
+                              itemCount: _bubbles.length,
+                              itemBuilder: (_, i) => _buildBubble(_bubbles[i], cs),
+                            ),
+                    ),
 
-                // 输入栏
-                _buildInputBar(cs),
-              ],
-            ),
-          ),
-        ],
+                    // 输入栏
+                    _buildInputBar(cs),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -540,9 +645,11 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
       '画出 y = x² 和它的切线',
       '画一个正六边形',
     ];
-    return Center(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(12, 24, 12, 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.chat_bubble_outline, size: 40,
               color: cs.onSurface.withValues(alpha: 0.2)),
@@ -555,6 +662,7 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
           Wrap(
             spacing: 6,
             runSpacing: 6,
+            alignment: WrapAlignment.center,
             children: suggestions
                 .map((s) => ActionChip(
                       label: Text(s, style: const TextStyle(fontSize: 11)),
