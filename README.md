@@ -3,7 +3,7 @@
   <img src="https://mathmate.top/images/overview.png" alt="MathMate Banner" width="800">
 
   <!-- MathMate Logo with Gradient -->
-  <img src="assets/app_icon_final.png" alt="MathMate Logo" width="120" height="120">
+  <img src="assets/icon.png" alt="MathMate Logo" width="120" height="120">
 
   # 🧮 MathMate
 
