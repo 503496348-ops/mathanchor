@@ -1,6 +1,6 @@
 <div align="center">
 
-  ![MathMate Banner](https://github.com/mzk-C4/mathmate/assets/your-username/banner.png)
+  ![MathMate Banner](https://mathmate.top/images/overview.png)
 
   <!-- MathMate Logo with Gradient -->
   <img src="assets/app_icon_final.png" alt="MathMate Logo" width="120" height="120">
@@ -29,13 +29,13 @@
 
 支持手写和印刷题目的智能识别，AI 自动生成详细的分步解析。10 秒内完成「拍照 → 识别 → 解题 → 可视化」全流程，无题库限制。
 
-![拍照搜题](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-search.jpg)
+![拍照搜题](https://mathmate.top/images/app-search.jpg)
 
 ### 🎨 交互式几何可视化
 
 核心创新技术：AI 自动从题目文本中抽取几何参数，自研 `GeometryPainter` 引擎（纯 Dart Canvas）实时渲染可交互图形。支持拖拽动点、轨迹动画，60fps 原生帧率。
 
-![几何可视化](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-viz.png)
+![几何可视化](https://mathmate.top/images/app-viz.png)
 
 ### 💬 AI 对话助手
 
@@ -65,7 +65,7 @@
 
 ## 🎬 产品演示
 
-[![MathMate 产品演示](https://github.com/mzk-C4/mathmate/assets/your-username/video-cover.jpg)](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
+[![MathMate 产品演示](https://mathmate.top/images/video-cover.jpg)](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
 
 **👆 点击观看完整演示视频（3 分钟）**
 
@@ -211,13 +211,13 @@ lib/
 
 | 拍照识别 | AI 求解 | 几何可视化 |
 |:-------:|:-------:|:----------:|
-| ![拍照](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-1.jpg) | ![解题](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-2.jpg) | ![可视化](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-3.jpg) |
+| ![拍照](https://mathmate.top/images/app-search.jpg) | ![解题](https://mathmate.top/images/app-result.jpg) | ![可视化](https://mathmate.top/images/app-viz.png) |
 
 ### 功能模块
 
 | AI 对话 | 手写笔记 | 数学工具箱 |
 |:-------:|:-------:|:----------:|
-| ![对话](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-4.jpg) | ![笔记](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-5.jpg) | ![工具箱](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-6.jpg) |
+| ![对话](https://mathmate.top/images/app-chat.jpg) | ![笔记](https://mathmate.top/images/app-notes.png) | ![工具箱](https://mathmate.top/images/app-tools.jpg) |
 
 ---
 
@@ -267,11 +267,11 @@ lib/
 
 | 成员 | 角色 |
 |:----|:----|
-| [@马兆坤](https://github.com/your-username) | 产品经理 |
-| [@丁宇鑫](https://github.com/your-username) | 前端设计 |
-| [@周星橙](https://github.com/your-username) | 前端开发 |
-| [@章开元](https://github.com/your-username) | 后端开发 |
-| [@应沛成](https://github.com/your-username) | AI 提示词工程师 |
+| **马兆坤** | 产品经理 |
+| **丁宇鑫** | 前端设计 |
+| **周星橙** | 前端开发 |
+| **章开元** | 后端开发 |
+| **应沛成** | AI 提示词工程师 |
 
 **指导老师**
 - 孙永谦（副教授 · 博士生导师）
