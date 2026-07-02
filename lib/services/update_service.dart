@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// 版本信息模型
@@ -29,14 +33,17 @@ class AppVersion {
 
 /// 联网自动更新服务。
 ///
-/// 启动时从 mathmate.top/version.json 获取最新版本信息，
-/// 与当前 app 版本比较，如有新版本则提示用户下载更新。
+/// 启动时自动检查 mathmate.top/version.json，有新版本则弹窗提示更新。
+/// Android 端支持下载 APK 后自动唤起安装器。
 class UpdateService {
   static const String _versionUrl = 'https://mathmate.top/version.json';
 
   /// 当前 APP 版本号（与 pubspec.yaml 保持同步）
-  static const int currentBuildNumber = 20260530;
+  static const int currentBuildNumber = 20260601;
   static const String currentVersion = '2.3.0';
+
+  /// 是否正在下载
+  static bool _isDownloading = false;
 
   /// 检查更新。返回最新版本信息，若已是最新则返回 null。
   static Future<AppVersion?> checkUpdate() async {
@@ -55,16 +62,43 @@ class UpdateService {
       }
       return null;
     } catch (_) {
-      // 网络错误静默处理
       return null;
     }
   }
 
-  /// 打开 APK 下载链接或引导用户更新。
-  static Future<void> openUpdate(AppVersion version) async {
-    final url = Uri.parse(version.apkUrl);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+  /// Android：下载 APK 到本地并唤起安装器。
+  /// Web / 桌面：打开浏览器下载。
+  static Future<String?> downloadAndInstall(AppVersion version,
+      {void Function(double progress)? onProgress}) async {
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+      // Web/桌面端 → 浏览器打开下载
+      final url = Uri.parse(version.apkUrl);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      }
+      return null;
+    }
+
+    if (_isDownloading) return null;
+    _isDownloading = true;
+
+    try {
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/mathmate-${version.version}.apk');
+
+      final response = await http.get(Uri.parse(version.apkUrl));
+      if (response.statusCode != 200) return '下载失败: HTTP ${response.statusCode}';
+
+      await file.writeAsBytes(response.bodyBytes);
+
+      // 唤起系统安装器
+      final result = await OpenFile.open(file.path,
+          type: 'application/vnd.android.package-archive');
+      return result.message;
+    } catch (e) {
+      return '下载失败: $e';
+    } finally {
+      _isDownloading = false;
     }
   }
 }

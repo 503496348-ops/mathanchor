@@ -321,7 +321,7 @@ class _ProfilePageState extends State<ProfilePage> {
           content: Text('最新版本: ${update.version}\n\n${update.releaseNotes}'),
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('稍后')),
-            FilledButton(onPressed: () { Navigator.pop(ctx); UpdateService.openUpdate(update); }, child: const Text('立即更新')),
+            FilledButton(onPressed: () { Navigator.pop(ctx); UpdateService.downloadAndInstall(update); }, child: const Text('立即更新')),
           ],
         ),
       );

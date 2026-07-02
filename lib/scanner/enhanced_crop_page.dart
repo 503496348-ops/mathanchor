@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
@@ -13,13 +13,11 @@ class EnhancedCropPage extends StatefulWidget {
 }
 
 class _EnhancedCropPageState extends State<EnhancedCropPage> {
-  // 裁剪框的四条边界（百分比 0.0 - 1.0）
   double _topPercent = 0.3;
   double _bottomPercent = 0.7;
   double _leftPercent = 0.1;
   double _rightPercent = 0.9;
 
-  // 整体拖拽状态
   bool _isMovingBox = false;
   double _lastTouchDx = 0;
   double _lastTouchDy = 0;
@@ -124,7 +122,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
                   return;
                 }
 
-                // 边缘拖拽（原有逻辑）
                 final distTop = (relativeY - _topPercent).abs();
                 final distBottom = (relativeY - _bottomPercent).abs();
                 final distLeft = (relativeX - _leftPercent).abs();
@@ -153,11 +150,9 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
             },
             child: Stack(
               children: [
-                // 1. 展示拍摄的原图
                 Center(
                   child: Image.file(widget.imageFile, fit: BoxFit.contain),
                 ),
-                // 2. 绘制矩形遮罩层
                 Positioned.fill(
                   child: CustomPaint(
                     painter: CropOverlayPainter(
@@ -168,7 +163,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
                     ),
                   ),
                 ),
-                // 3. 辅助手柄（上下）
                 _buildHorizontalHandle(
                   constraints.maxHeight * _topPercent,
                   true,
@@ -177,7 +171,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
                   constraints.maxHeight * _bottomPercent,
                   false,
                 ),
-                // 4. 辅助手柄（左右）
                 _buildVerticalHandle(
                   constraints.maxWidth * _leftPercent,
                   true,
@@ -238,7 +231,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
     );
   }
 
-  // 利用 image 库进行像素级裁剪
   Future<void> _processCrop() async {
     final bytes = await widget.imageFile.readAsBytes();
     final decodedImage = img.decodeImage(bytes);
@@ -259,7 +251,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
       height: height,
     );
 
-    // 保存并返回
     final croppedFile = File(
       widget.imageFile.path.replaceAll('.jpg', '_cropped.jpg'),
     )..writeAsBytesSync(img.encodeJpg(croppedImage));
@@ -268,7 +259,6 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
   }
 }
 
-// 矩形遮罩绘制器
 class CropOverlayPainter extends CustomPainter {
   final double topPercent;
   final double bottomPercent;
@@ -290,16 +280,11 @@ class CropOverlayPainter extends CustomPainter {
     final leftX = size.width * leftPercent;
     final rightX = size.width * rightPercent;
 
-    // 绘制上方阴影
     canvas.drawRect(Rect.fromLTRB(0, 0, size.width, topY), paint);
-    // 绘制下方阴影
     canvas.drawRect(Rect.fromLTRB(0, bottomY, size.width, size.height), paint);
-    // 绘制左侧阴影
     canvas.drawRect(Rect.fromLTRB(0, topY, leftX, bottomY), paint);
-    // 绘制右侧阴影
     canvas.drawRect(Rect.fromLTRB(rightX, topY, size.width, bottomY), paint);
 
-    // 绘制中间的矩形高亮框
     final borderPaint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.stroke

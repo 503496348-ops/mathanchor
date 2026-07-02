@@ -29,7 +29,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:mathmate/services/video_recommendation_service.dart';
 import 'package:mathmate/theme/app_theme.dart';
 import 'package:mathmate/tutorial_page.dart';
-import 'package:mathmate/pages/geogebra_chat_entry.dart';
+import 'package:mathmate/services/update_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,6 +87,33 @@ class _MathMateAppState extends State<MathMateApp> {
     super.initState();
     _themeService = ThemeService.instance;
     _themeService.addListener(_onThemeChanged);
+    // 启动 3 秒后静默检查更新
+    Future.delayed(const Duration(seconds: 3), _checkAutoUpdate);
+  }
+
+  Future<void> _checkAutoUpdate() async {
+    final update = await UpdateService.checkUpdate();
+    if (!mounted || update == null) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('发现新版本'),
+        content: Text('最新版本: ${update.version}\n\n${update.releaseNotes}'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('稍后')),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final msg = await UpdateService.downloadAndInstall(update);
+              if (msg != null && mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+              }
+            },
+            child: const Text('立即更新'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -366,8 +393,6 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     const SizedBox(height: 18),
                     _buildCameraHero(),
                     const SizedBox(height: 14),
-                _buildGeoChatCard(),
-                const SizedBox(height: 14),
                 _buildToolboxCard(),
                 const SizedBox(height: 16),
                 Row(
@@ -685,81 +710,6 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
       ),
     );
   }
-
-  Widget _buildGeoChatCard() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const GeogebraChatPage()),
-        );
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF3F51B5), Color(0xFF7986CB)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: cs.shadow.withValues(alpha: 0.10),
-              blurRadius: 12,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.auto_awesome,
-                color: Colors.white,
-                size: 28,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    'GeoChat',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'AI 驱动的几何画板，用自然语言操控 GeoGebra',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: Colors.white.withValues(alpha: 0.7),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildVideoList() {
     final List<VideoResource> videos = _recommendedVideos;
 
