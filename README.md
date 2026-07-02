@@ -1,6 +1,6 @@
 <div align="center">
 
-  ![MathMate Banner](https://mathmate.top/images/overview.png)
+  <img src="https://mathmate.top/images/overview.png" alt="MathMate Banner" width="800">
 
   <!-- MathMate Logo with Gradient -->
   <img src="assets/app_icon_final.png" alt="MathMate Logo" width="120" height="120">
@@ -29,13 +29,18 @@
 
 支持手写和印刷题目的智能识别，AI 自动生成详细的分步解析。10 秒内完成「拍照 → 识别 → 解题 → 可视化」全流程，无题库限制。
 
-![拍照搜题](https://mathmate.top/images/app-search.jpg)
+<p align="center">
+  <img src="https://mathmate.top/images/app-search.jpg" width="260" alt="拍照识别">
+  <img src="https://mathmate.top/images/app-result.jpg" width="260" alt="AI解题">
+</p>
 
 ### 🎨 交互式几何可视化
 
 核心创新技术：AI 自动从题目文本中抽取几何参数，自研 `GeometryPainter` 引擎（纯 Dart Canvas）实时渲染可交互图形。支持拖拽动点、轨迹动画，60fps 原生帧率。
 
-![几何可视化](https://mathmate.top/images/app-viz.png)
+<p align="center">
+  <img src="https://mathmate.top/images/app-viz.png" width="260" alt="几何可视化">
+</p>
 
 ### 💬 AI 对话助手
 
@@ -65,7 +70,9 @@
 
 ## 🎬 产品演示
 
-[![MathMate 产品演示](https://mathmate.top/images/video-cover.jpg)](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
+<p align="center">
+  <a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/"><img src="https://mathmate.top/images/video-cover.jpg" width="600" alt="MathMate 产品演示"></a>
+</p>
 
 **👆 点击观看完整演示视频（3 分钟）**
 
@@ -207,17 +214,21 @@ lib/
 
 ## 📸 应用截图
 
-### 拍照搜题流程
+### 拍照搜题 · 一站式解题流程
 
-| 拍照识别 | AI 求解 | 几何可视化 |
-|:-------:|:-------:|:----------:|
-| ![拍照](https://mathmate.top/images/app-search.jpg) | ![解题](https://mathmate.top/images/app-result.jpg) | ![可视化](https://mathmate.top/images/app-viz.png) |
+<p align="center">
+  <img src="https://mathmate.top/images/app-search.jpg" width="220" alt="拍照识别">
+  <img src="https://mathmate.top/images/app-result.jpg" width="220" alt="AI 求解">
+  <img src="https://mathmate.top/images/app-viz.png" width="220" alt="几何可视化">
+</p>
 
-### 功能模块
+### 核心功能模块
 
-| AI 对话 | 手写笔记 | 数学工具箱 |
-|:-------:|:-------:|:----------:|
-| ![对话](https://mathmate.top/images/app-chat.jpg) | ![笔记](https://mathmate.top/images/app-notes.png) | ![工具箱](https://mathmate.top/images/app-tools.jpg) |
+<p align="center">
+  <img src="https://mathmate.top/images/app-chat.jpg" width="220" alt="AI 对话">
+  <img src="https://mathmate.top/images/app-notes.png" width="220" alt="手写笔记">
+  <img src="https://mathmate.top/images/app-tools.jpg" width="220" alt="数学工具箱">
+</p>
 
 ---
 
