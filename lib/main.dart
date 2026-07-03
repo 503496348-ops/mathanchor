@@ -30,6 +30,13 @@ import 'package:mathmate/services/video_recommendation_service.dart';
 import 'package:mathmate/theme/app_theme.dart';
 import 'package:mathmate/tutorial_page.dart';
 import 'package:mathmate/services/update_service.dart';
+import 'package:mathmate/pages/ai_drawing_page.dart';
+import 'package:mathmate/pages/geogebra_chat_entry.dart';
+import 'package:mathmate/agents/orchestrator.dart';
+import 'package:mathmate/agents/visualizer_agent.dart';
+import 'package:mathmate/learner/models/learner_profile.dart';
+import 'package:mathmate/learner/services/profile_repository.dart';
+import 'package:mathmate/learner/widgets/profile_setup_dialog.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +67,9 @@ Future<void> main() async {
     await ConversationRepository.instance.init();
   }
   await ThemeService.instance.init();
+
+  // 多智能体注册（软件杯参赛：多智能体协同架构）
+  Orchestrator.instance.register(VisualizerAgent());
 
   final bool isFirst = kIsWeb ? true : await HistoryRepository.instance.isFirstLaunch();
   final bool tutorialCompleted = kIsWeb ? false : await HistoryRepository.instance.isTutorialCompleted();
@@ -390,10 +400,14 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     _buildSearchBar(),
+                    const SizedBox(height: 14),
+                    _buildProfileEntry(),
                     const SizedBox(height: 18),
                     _buildCameraHero(),
                     const SizedBox(height: 14),
                 _buildToolboxCard(),
+                const SizedBox(height: 16),
+                _buildGeoChatCard(),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -422,6 +436,63 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
       ),
       ),
       ),
+    );
+  }
+
+  /// 学习画像入口（软件杯：对话式学习画像）
+  Widget _buildProfileEntry() {
+    return FutureBuilder<LearnerProfile?>(
+      future: ProfileRepository.instance.load(),
+      builder: (BuildContext context, AsyncSnapshot<LearnerProfile?> snapshot) {
+        final LearnerProfile? profile = snapshot.data;
+        final bool ready = profile != null && profile.isUsable;
+        final Color main = ready ? Colors.green : Colors.orange;
+        return GestureDetector(
+          onTap: () async {
+            await ProfileSetupDialog.show(context);
+            if (mounted) setState(() {});
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: ready ? Colors.green.shade50 : Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: main.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: <Widget>[
+                Icon(
+                  ready ? Icons.person_rounded : Icons.person_add_alt_rounded,
+                  color: main,
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        ready ? '学习画像已就绪' : '构建你的学习画像',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        ready
+                            ? '完整度 ${(profile.completeness * 100).round()}% · 点击查看 / 随学随新'
+                            : 'AI 对话抽取 6 维特征，开启个性化学习',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right_rounded, color: Colors.grey[400]),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -551,6 +622,81 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
     );
   }
 
+  /// GeoChat 智能几何助手入口卡片
+  Widget _buildGeoChatCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const GeogebraChatPage(),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(20, 16, 18, 16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: <Color>[Color(0xFF6A5BFF), Color(0xFF4C6FFF)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: const Color(0xFF4C6FFF).withValues(alpha: 0.30),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.22),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.chat_bubble_outline_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const <Widget>[
+                  Text(
+                    'GeoChat 智能几何助手',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '用自然语言对话，自动绘制 GeoGebra 图形',
+                    style: TextStyle(fontSize: 12, color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white,
+              size: 18,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildToolboxCard() {
     return Container(
       width: double.infinity,
@@ -589,7 +735,7 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
               mainAxisSpacing: 10,
               childAspectRatio: 1.5,
             ),
-            itemCount: 6,
+            itemCount: 7,
             itemBuilder: (BuildContext context, int index) {
               final List<Map<String, dynamic>> tools = <Map<String, dynamic>>[
                 <String, dynamic>{
@@ -656,6 +802,17 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const GeogebraPage(appName: 'probability'),
+                      ),
+                    );
+                  },
+                },
+                <String, dynamic>{
+                  'icon': Icons.auto_awesome,
+                  'name': 'AI绘图',
+                  'onTap': () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const AIDrawingPage(),
                       ),
                     );
                   },
