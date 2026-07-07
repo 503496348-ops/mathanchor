@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mathmate/beautiful_result_page.dart';
 import 'package:mathmate/pages/chat_home_page.dart';
@@ -28,6 +28,7 @@ import 'package:mathmate/services/theme_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mathmate/services/video_recommendation_service.dart';
 import 'package:mathmate/theme/app_theme.dart';
+import 'package:mathmate/responsive/responsive_shell.dart';
 import 'package:mathmate/tutorial_page.dart';
 import 'package:mathmate/services/update_service.dart';
 import 'package:mathmate/pages/ai_drawing_page.dart';
@@ -37,6 +38,8 @@ import 'package:mathmate/agents/visualizer_agent.dart';
 import 'package:mathmate/learner/models/learner_profile.dart';
 import 'package:mathmate/learner/services/profile_repository.dart';
 import 'package:mathmate/learner/widgets/profile_setup_dialog.dart';
+import 'package:mathmate/library/presentation/library_page.dart';
+import 'package:mathmate/library/services/material_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +70,7 @@ Future<void> main() async {
     await ConversationRepository.instance.init();
   }
   await ThemeService.instance.init();
+  await MaterialRepository.instance.init();
 
   // 多智能体注册（软件杯参赛：多智能体协同架构）
   Orchestrator.instance.register(VisualizerAgent());
@@ -194,31 +198,16 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: '题目',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border_rounded),
-            label: '笔记',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            label: '我的',
-          ),
-        ],
-      ),
+    // 桌面端导航壳：宽屏自动切换为 NavigationRail，窄屏保持原底部导航外观。
+    return ResponsiveShell(
+      currentIndex: _currentIndex,
+      onTap: (int index) => setState(() => _currentIndex = index),
+      pages: _pages,
+      tabs: const <NavTab>[
+        NavTab(icon: Icons.grid_view_rounded, label: '题目'),
+        NavTab(icon: Icons.bookmark_border_rounded, label: '笔记'),
+        NavTab(icon: Icons.account_circle_outlined, label: '我的'),
+      ],
     );
   }
 }
@@ -337,26 +326,23 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
     });
 
     try {
-      // 1. scanner_service 返回 String 路径，用 dynamic 接收
-      final dynamic scannedPath = await _scannerService.startScanning(context);
+      // 1. scanner_service 返回 XFile（Web 为内存 blob，原生为缓存文件）
+      final XFile? scanned = await _scannerService.startScanning(context);
 
       if (!mounted) return;
-      if (scannedPath == null) return; // 用户取消了
+      if (scanned == null) return; // 用户取消了
 
-      // 2. 路径字符串 → File 对象
-      final File scannedFile = File(scannedPath as String);
-
-      // 3. 进入裁剪页面
-      final File? croppedFile = await Navigator.of(context).push<File>(
+      // 2. 进入裁剪页面，返回裁剪后的 XFile
+      final XFile? croppedFile = await Navigator.of(context).push<XFile>(
         MaterialPageRoute(
-          builder: (_) => EnhancedCropPage(imageFile: scannedFile),
+          builder: (_) => EnhancedCropPage(imageFile: scanned),
         ),
       );
 
       if (!mounted) return;
       if (croppedFile == null) return;
 
-      // 4. 进入结果页面
+      // 3. 进入结果页面
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => BeautifulResultPage(image: croppedFile),
@@ -387,7 +373,7 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: isWide ? 800 : double.infinity),
+            constraints: BoxConstraints(maxWidth: isWide ? 1100 : double.infinity),
             child: RefreshIndicator(
               onRefresh: _onRefresh,
               color: cs.primary,
@@ -402,6 +388,8 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     _buildSearchBar(),
                     const SizedBox(height: 14),
                     _buildProfileEntry(),
+                    const SizedBox(height: 12),
+                    _buildLibraryEntry(),
                     const SizedBox(height: 18),
                     _buildCameraHero(),
                     const SizedBox(height: 14),
@@ -493,6 +481,71 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
           ),
         );
       },
+    );
+  }
+
+  /// 学习资料库入口卡（软件杯：个性化学习资料库）
+  Widget _buildLibraryEntry() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const LibraryPage()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 16, 18, 16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: <Color>[Color(0xFF22B07D), Color(0xFF1E9E6C)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.22),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.folder_special_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '我的学习资料库',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '上传课件 / 真题 / 板书，AI 自动分类整理',
+                    style: TextStyle(fontSize: 12, color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white,
+              size: 18,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

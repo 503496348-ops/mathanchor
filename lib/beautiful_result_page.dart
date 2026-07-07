@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -9,6 +7,7 @@ import 'package:mathmate/data/hive_models.dart';
 import 'package:mathmate/data/history_repository.dart';
 import 'package:mathmate/models/pipeline_models.dart';
 import 'package:mathmate/models/pipeline_stage.dart';
+import 'package:mathmate/responsive/breakpoints.dart';
 import 'package:mathmate/services/app_logger.dart';
 import 'package:mathmate/services/math_pipeline_service.dart';
 import 'package:mathmate/visualization/geometry_validator.dart';
@@ -18,7 +17,7 @@ import 'package:mathmate/visualization_page.dart';
 import 'package:mathmate/services/katex_pdf_service.dart';
 
 class BeautifulResultPage extends StatefulWidget {
-  final File image;
+  final XFile image;
   final MathHistory? history;
   final String? heroTag;
 
@@ -65,15 +64,6 @@ class _BeautifulResultPageState extends State<BeautifulResultPage> {
   Future<void> _loadImageBytes() async {
     try {
       AppLogger.instance.info('[ResultPage] 尝试加载图片: ${widget.image.path}');
-      if (!await widget.image.exists()) {
-        AppLogger.instance.error('[ResultPage] 图片文件不存在: ${widget.image.path}');
-        if (mounted) {
-          setState(() {
-            _stageErrors.add('图片文件不存在: ${widget.image.path}');
-          });
-        }
-        return;
-      }
       _imageBytes = await widget.image.readAsBytes();
       AppLogger.instance.info('[ResultPage] 图片加载成功: ${_imageBytes!.length} 字节');
       if (!mounted) return;
@@ -100,7 +90,7 @@ class _BeautifulResultPageState extends State<BeautifulResultPage> {
       AppLogger.instance.info('[ResultPage] ========== 开始 Pipeline ==========');
       AppLogger.instance.info('[ResultPage] 图片路径: ${widget.image.path}');
       final PipelineResult result = await _pipelineService.runFromImage(
-        XFile(widget.image.path),
+        widget.image,
         onStageChanged: (PipelineStage stage) {
           if (!mounted) return;
           setState(() {
@@ -875,6 +865,217 @@ class _BeautifulResultPageState extends State<BeautifulResultPage> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme cs = Theme.of(context).colorScheme;
+    if (context.isDesktop) {
+      return _buildDesktopLayout(cs);
+    }
+    return _buildMobileLayout(cs);
+  }
+
+  /// 桌面 / 宽屏布局：左侧固定原图与状态，右侧滚动展示题目、解答、公式与几何可视化。
+  Widget _buildDesktopLayout(ColorScheme cs) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('识别结果'),
+        actions: <Widget>[
+          IconButton(
+            tooltip: '查看调试日志',
+            icon: const Icon(Icons.bug_report_outlined, size: 20),
+            onPressed: _showLogViewer,
+          ),
+          IconButton(
+            tooltip: '导出 PDF',
+            icon: const Icon(Icons.picture_as_pdf_outlined, size: 20),
+            onPressed: _exportPdf,
+          ),
+        ],
+      ),
+      body: Row(
+        children: <Widget>[
+          // 左侧：原图（contain 适配）+ 处理状态
+          SizedBox(
+            width: 420,
+            child: Container(
+              color: cs.surfaceContainerHighest,
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: _imageBytes == null
+                        ? const Center(child: CircularProgressIndicator())
+                        : GestureDetector(
+                            onTap: _showFullImageViewer,
+                            child: widget.heroTag == null
+                                ? Image.memory(_imageBytes!, fit: BoxFit.contain)
+                                : Hero(
+                                    tag: widget.heroTag!,
+                                    child: Image.memory(_imageBytes!, fit: BoxFit.contain),
+                                  ),
+                          ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+                    child: Text(
+                      _statusMessage,
+                      style: TextStyle(color: cs.onSurfaceVariant, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const VerticalDivider(width: 1),
+          // 右侧：识别结果与解题内容（滚动）
+          Expanded(
+            child: _isAnalyzing
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        if (_stageErrors.isNotEmpty) ...<Widget>[
+                          ..._stageErrors.map(
+                            (String error) => Text(
+                              '• $error',
+                              style: const TextStyle(color: Colors.redAccent),
+                            ),
+                          ),
+                          const Divider(height: 32),
+                        ],
+                        _buildMarkdownBlock(
+                          title: '题目内容',
+                          content: _questionMarkdown,
+                          emptyText: '题目识别为空',
+                          accentColor: const Color(0xFF5C6BC0),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildMarkdownBlock(
+                          title: '解答过程',
+                          content: _solutionMarkdown,
+                          emptyText: '解题阶段未返回内容',
+                          accentColor: const Color(0xFF26A69A),
+                        ),
+                        const SizedBox(height: 20),
+                        if (_formulaPreview != null) ...<Widget>[
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF3E5F5),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFCE93D8), width: 1),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    const Icon(Icons.functions, size: 18, color: Color(0xFF7B1FA2)),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      '公式预览',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                        color: Color(0xFF7B1FA2),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: _copyFormula,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF7B1FA2).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: const Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Icon(Icons.copy, size: 14, color: Color(0xFF7B1FA2)),
+                                            SizedBox(width: 4),
+                                            Text('点击复制', style: TextStyle(fontSize: 12, color: Color(0xFF7B1FA2))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Center(
+                                  child: InteractiveViewer(
+                                    panEnabled: true,
+                                    scaleEnabled: true,
+                                    minScale: 0.5,
+                                    maxScale: 3.0,
+                                    boundaryMargin: const EdgeInsets.all(40),
+                                    child: Math.tex(
+                                      _formulaPreview!,
+                                      textStyle: const TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                        if (_geometryScene != null) ...<Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: SizedBox(
+                              height: 320,
+                              child: CustomPaint(
+                                size: Size.infinite,
+                                painter: GeometryPainter(
+                                  scene: SafeJsonParser.parseSceneFromMap(_geometryScene!),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => VisualizationPage(
+                                      scene: _geometryScene!,
+                                      title: '几何可视化',
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.fullscreen, size: 18),
+                              label: const Text('全屏查看'),
+                            ),
+                          ),
+                        ] else
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: cs.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              _geometryMessage ?? '暂未生成可视化数据。',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: cs.onSurfaceVariant),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 窄屏布局：保留原有"背景图 + 底部可拖拽抽屉"设计。
+  Widget _buildMobileLayout(ColorScheme cs) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(

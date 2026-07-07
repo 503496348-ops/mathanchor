@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mathmate/beautiful_result_page.dart';
 import 'package:mathmate/data/hive_models.dart';
 import 'package:mathmate/data/history_repository.dart';
@@ -92,7 +93,7 @@ class _HistoryListPageState extends State<HistoryListPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => BeautifulResultPage(
-                          image: File(item.originalImagePath),
+                          image: XFile(item.originalImagePath),
                           history: item,
                           heroTag: heroTag,
                         ),

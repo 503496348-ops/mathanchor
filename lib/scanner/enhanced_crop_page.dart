@@ -1,10 +1,13 @@
 ﻿import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+import 'package:image_picker/image_picker.dart';
 
 class EnhancedCropPage extends StatefulWidget {
-  final File imageFile;
+  final XFile imageFile;
 
   const EnhancedCropPage({super.key, required this.imageFile});
 
@@ -23,6 +26,21 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
   double _lastTouchDy = 0;
 
   static const double _edgeThreshold = 0.04;
+
+  Uint8List? _imageBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImageBytes();
+  }
+
+  Future<void> _loadImageBytes() async {
+    try {
+      _imageBytes = await widget.imageFile.readAsBytes();
+    } catch (_) {}
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +169,9 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
             child: Stack(
               children: [
                 Center(
-                  child: Image.file(widget.imageFile, fit: BoxFit.contain),
+                  child: _imageBytes == null
+                      ? const Center(child: CircularProgressIndicator())
+                      : Image.memory(_imageBytes!, fit: BoxFit.contain),
                 ),
                 Positioned.fill(
                   child: CustomPaint(
@@ -250,12 +270,20 @@ class _EnhancedCropPageState extends State<EnhancedCropPage> {
       width: width,
       height: height,
     );
+    final croppedBytes = Uint8List.fromList(img.encodeJpg(croppedImage));
 
-    final croppedFile = File(
-      widget.imageFile.path.replaceAll('.jpg', '_cropped.jpg'),
-    )..writeAsBytesSync(img.encodeJpg(croppedImage));
+    // Web 上无法写本地文件，用内存 bytes 构造 XFile；原生沿用写临时文件的老逻辑。
+    XFile resultFile;
+    if (kIsWeb) {
+      resultFile = XFile.fromData(croppedBytes, mimeType: 'image/jpeg');
+    } else {
+      final croppedPath =
+          widget.imageFile.path.replaceAll('.jpg', '_cropped.jpg');
+      File(croppedPath).writeAsBytesSync(croppedBytes);
+      resultFile = XFile(croppedPath);
+    }
 
-    if (mounted) Navigator.pop(context, croppedFile);
+    if (mounted) Navigator.pop(context, resultFile);
   }
 }
 

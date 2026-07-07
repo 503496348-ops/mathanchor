@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -47,7 +48,7 @@ class HistoryRepository {
   }
 
   Future<void> saveHistory({
-    required File sourceImage,
+    required XFile sourceImage,
     required String ocrContent,
     required String solutionMarkdown,
     required String latexResult,
@@ -163,7 +164,7 @@ class HistoryRepository {
     return '数学问题';
   }
 
-  Future<String> _persistImage(File sourceImage) async {
+  Future<String> _persistImage(XFile sourceImage) async {
     if (kIsWeb) {
       return sourceImage.path;
     }
@@ -181,11 +182,13 @@ class HistoryRepository {
         'history_${DateTime.now().millisecondsSinceEpoch}$ext';
     final String targetPath = path.join(imageDir.path, filename);
 
-    final File copied = await sourceImage.copy(targetPath);
+    // 原生端 sourceImage.path 是有效的缓存路径，借此复制到持久化目录
+    final File sourceFile = File(sourceImage.path);
+    final File copied = await sourceFile.copy(targetPath);
 
     try {
-      if (await sourceImage.exists()) {
-        await sourceImage.delete();
+      if (await sourceFile.exists()) {
+        await sourceFile.delete();
       }
     } catch (e) {
       debugPrint('cleanup temp image failed: $e');

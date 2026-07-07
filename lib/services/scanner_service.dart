@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 class ScannerService {
   final ImagePicker _picker = ImagePicker();
 
-  Future<dynamic> startScanning(BuildContext context) async {
+  Future<XFile?> startScanning(BuildContext context) async {
     if (kIsWeb) {
       // Web: 使用 image_picker 的 gallery 模式
       try {
@@ -15,8 +15,7 @@ class ScannerService {
           imageQuality: 90,
         );
         if (photo != null) {
-          // Web 返回 blob URL 字符串
-          return photo.path;
+          return photo;
         }
       } catch (e) {
         debugPrint('ScannerService web pickImage error: $e');
@@ -78,8 +77,7 @@ class ScannerService {
       return null;
     }
 
-    // 返回路径字符串，调用方根据平台自行处理
-    return photo.path;
+    return photo;
   }
 
   Future<ImageSource?> _showSourcePicker(BuildContext context) async {

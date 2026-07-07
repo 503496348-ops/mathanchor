@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mathmate/chat_page.dart';
 import 'package:mathmate/data/hive_conversation_models.dart';
 import 'package:mathmate/data/conversation_repository.dart';
+import 'package:mathmate/responsive/breakpoints.dart';
 import 'package:mathmate/services/model_service.dart';
 
 class ChatHomePage extends StatefulWidget {
@@ -55,7 +56,8 @@ class _ChatHomePageState extends State<ChatHomePage> {
     setState(() {
       _currentConversationId = null;
     });
-    if (mounted) {
+    // 窄屏需要关闭 Drawer；桌面端面板常驻，无需 pop。
+    if (mounted && !context.isDesktop) {
       Navigator.of(context).pop();
     }
   }
@@ -64,7 +66,10 @@ class _ChatHomePageState extends State<ChatHomePage> {
     setState(() {
       _currentConversationId = id;
     });
-    Navigator.of(context).pop();
+    // 窄屏需要关闭 Drawer；桌面端面板常驻，无需 pop。
+    if (!context.isDesktop) {
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> _deleteConversation(int id) async {
@@ -89,14 +94,21 @@ class _ChatHomePageState extends State<ChatHomePage> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme cs = Theme.of(context).colorScheme;
+    final bool isDesktop = context.isDesktop;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: cs.surface,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: cs.onSurface),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        ),
+        // 桌面端无 Drawer，leading 用返回按钮；窄屏用菜单按钮打开对话 Drawer。
+        leading: isDesktop
+            ? IconButton(
+                icon: Icon(Icons.arrow_back, color: cs.onSurface),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : IconButton(
+                icon: Icon(Icons.menu, color: cs.onSurface),
+                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+              ),
         title: const Text(
           '蓝心数学助手',
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
@@ -137,29 +149,46 @@ class _ChatHomePageState extends State<ChatHomePage> {
           child: Container(color: cs.outlineVariant, height: 0.5),
         ),
       ),
-      drawer: _buildDrawer(),
-      body: ChatPage(
-        conversationId: _currentConversationId,
-        initialQuery: widget.initialQuery,
-        onConversationCreated: (int id) {
-          _currentConversationId = id;
-        },
-      ),
+      // 窄屏：对话列表放 Drawer；桌面：左侧常驻面板 + 右侧聊天区。
+      drawer: isDesktop ? null : _buildDrawer(),
+      body: isDesktop
+          ? Row(
+              children: <Widget>[
+                SizedBox(width: 320, child: _buildConversationPanel()),
+                const VerticalDivider(width: 1),
+                Expanded(child: _buildChatArea()),
+              ],
+            )
+          : _buildChatArea(),
     );
   }
 
   Widget _buildDrawer() {
-    return Drawer(
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildDrawerHeader(),
-            const Divider(height: 1),
-            Expanded(child: _buildConversationList()),
-          ],
-        ),
+    return Drawer(child: _buildConversationPanel());
+  }
+
+  /// 对话列表面板：窄屏作为 Drawer 内容，桌面作为左侧常驻栏复用。
+  Widget _buildConversationPanel() {
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildDrawerHeader(),
+          const Divider(height: 1),
+          Expanded(child: _buildConversationList()),
+        ],
       ),
+    );
+  }
+
+  /// 聊天主区域，桌面与窄屏共用。
+  Widget _buildChatArea() {
+    return ChatPage(
+      conversationId: _currentConversationId,
+      initialQuery: widget.initialQuery,
+      onConversationCreated: (int id) {
+        _currentConversationId = id;
+      },
     );
   }
 

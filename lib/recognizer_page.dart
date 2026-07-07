@@ -39,11 +39,11 @@ class _RecognizerPageState extends State<RecognizerPage> {
       AppLogger.instance.info('[Recognizer] picked: path=${selected.path}, name=${selected.name}');
       if (!mounted) return;
 
-      final imageFile = await _copyToTempFile(selected);
+      final XFile imageFile = selected;
 
       if (!mounted) return;
       AppLogger.instance.info('[Recognizer] navigating to crop page...');
-      final File? croppedFile = await Navigator.push<File>(
+      final XFile? croppedFile = await Navigator.push<XFile>(
         context,
         MaterialPageRoute(
           builder: (_) => EnhancedCropPage(imageFile: imageFile),
@@ -58,7 +58,7 @@ class _RecognizerPageState extends State<RecognizerPage> {
       AppLogger.instance.info('[Recognizer] cropped: ${croppedFile.path}');
 
       setState(() {
-        _image = XFile(croppedFile.path);
+        _image = croppedFile;
       });
 
       await Navigator.push(
