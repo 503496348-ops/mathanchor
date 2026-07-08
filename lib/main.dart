@@ -40,6 +40,7 @@ import 'package:mathmate/learner/services/profile_repository.dart';
 import 'package:mathmate/learner/widgets/profile_setup_dialog.dart';
 import 'package:mathmate/library/presentation/library_page.dart';
 import 'package:mathmate/library/services/material_repository.dart';
+import 'package:mathmate/exam/pages/question_bank_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,8 +76,15 @@ Future<void> main() async {
   // 多智能体注册（软件杯参赛：多智能体协同架构）
   Orchestrator.instance.register(VisualizerAgent());
 
-  final bool isFirst = kIsWeb ? true : await HistoryRepository.instance.isFirstLaunch();
-  final bool tutorialCompleted = kIsWeb ? false : await HistoryRepository.instance.isTutorialCompleted();
+  final bool isFirst;
+  if (kIsWeb) {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    isFirst = !prefs.containsKey('web_grade');
+  } else {
+    isFirst = await HistoryRepository.instance.isFirstLaunch();
+  }
+  // Web 端跳过教程（避免选完年级又卡教程页）
+  final bool tutorialCompleted = kIsWeb ? true : await HistoryRepository.instance.isTutorialCompleted();
   runApp(MathMateApp(
     checkFirstLaunch: isFirst,
     showTutorial: !tutorialCompleted && !isFirst,
@@ -193,7 +201,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _pages = const <Widget>[QuestionHomePage(), NotesPage(), ProfilePage()];
+    _pages = const <Widget>[QuestionHomePage(), LibraryPage(), NotesPage(), ProfilePage()];
   }
 
   @override
@@ -205,6 +213,7 @@ class _MainScreenState extends State<MainScreen> {
       pages: _pages,
       tabs: const <NavTab>[
         NavTab(icon: Icons.grid_view_rounded, label: '题目'),
+        NavTab(icon: Icons.folder_special_rounded, label: '资料库'),
         NavTab(icon: Icons.bookmark_border_rounded, label: '笔记'),
         NavTab(icon: Icons.account_circle_outlined, label: '我的'),
       ],
@@ -370,8 +379,16 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
     final bool isWide = screenWidth > 700;
     return Scaffold(
       backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Center(
+      body: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: Image.asset('assets/images/background.png', fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: ColoredBox(color: cs.surface.withValues(alpha: 0.55)),
+          ),
+          SafeArea(
+            child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: isWide ? 1100 : double.infinity),
             child: RefreshIndicator(
@@ -389,40 +406,42 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     const SizedBox(height: 14),
                     _buildProfileEntry(),
                     const SizedBox(height: 12),
-                    _buildLibraryEntry(),
+                    _buildQuestionBankEntry(),
                     const SizedBox(height: 18),
                     _buildCameraHero(),
-                    const SizedBox(height: 14),
-                _buildToolboxCard(),
-                const SizedBox(height: 16),
-                _buildGeoChatCard(),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Text(
-                      '数学视频推荐',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    const SizedBox(height: 16),
+                    _buildGeoChatCard(),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        const Text(
+                          '数学视频推荐',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (_isRefreshing)
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                      ],
                     ),
-                    if (_isRefreshing)
-                      const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+                    const SizedBox(height: 10),
+                    _buildVideoList(),
+                    const SizedBox(height: 16),
+                    _buildToolboxCard(),
                   ],
-                ),
-                const SizedBox(height: 10),
-                _buildVideoList(),
-              ],
             ),
           ),
         ),
       ),
       ),
+      ),
+        ],
       ),
     );
   }
@@ -484,19 +503,20 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
     );
   }
 
-  /// 学习资料库入口卡（软件杯：个性化学习资料库）
-  Widget _buildLibraryEntry() {
+  /// 夸克风格搜索入口：点击直接进入蓝心助手对话界面。
+  /// 题库入口卡（考试模块入口，接云端 API）
+  Widget _buildQuestionBankEntry() {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const LibraryPage()),
+          MaterialPageRoute(builder: (_) => const QuestionBankPage()),
         );
       },
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 16, 18, 16),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: <Color>[Color(0xFF22B07D), Color(0xFF1E9E6C)],
+            colors: <Color>[Color(0xFF5B6CFF), Color(0xFF4C6FFF)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
@@ -511,38 +531,27 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                 color: Colors.white.withValues(alpha: 0.22),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
-                Icons.folder_special_rounded,
-                color: Colors.white,
-                size: 26,
-              ),
+              child: const Icon(Icons.menu_book_rounded,
+                  color: Colors.white, size: 26),
             ),
             const SizedBox(width: 14),
             const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    '我的学习资料库',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
+                  Text('数学题库',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white)),
                   SizedBox(height: 4),
-                  Text(
-                    '上传课件 / 真题 / 板书，AI 自动分类整理',
-                    style: TextStyle(fontSize: 12, color: Colors.white70),
-                  ),
+                  Text('按板块/难度筛选 · 真题+解析 · 云端共享',
+                      style: TextStyle(fontSize: 12, color: Colors.white70)),
                 ],
               ),
             ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.white,
-              size: 18,
-            ),
+            const Icon(Icons.arrow_forward_ios_rounded,
+                color: Colors.white, size: 18),
           ],
         ),
       ),
@@ -550,55 +559,60 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: cs.shadow,
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(Icons.search, color: cs.onSurfaceVariant),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: '搜索题目或问蓝心助手...',
-                border: InputBorder.none,
-              ),
-              onSubmitted: (_) => _openSearchChat(),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(_ChatTransitionRoute(
+          targetPage: const ChatHomePage(),
+        ));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: cs.surface,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: cs.primary.withValues(alpha: 0.25), width: 1.5),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: cs.primary.withValues(alpha: 0.12),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(_ChatTransitionRoute(
-                targetPage: const ChatHomePage(),
-              ));
-            },
-            icon: const Icon(Icons.chat_bubble_outline_rounded),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const HistoryListPage()),
-              );
-            },
-            icon: const Icon(Icons.history_rounded),
-          ),
-        ],
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.auto_awesome, color: cs.primary, size: 22),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                '问任何数学问题，或点击开始对话...',
+                style: TextStyle(color: cs.onSurfaceVariant, fontSize: 15),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: cs.primary,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                '问 AI',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildCameraHero() {
+    // Web 端无相机，改为上传图片入口
+    if (kIsWeb) return _buildUploadHero();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -668,6 +682,62 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Web 端上传图片入口（无相机，改为选图上传）。
+  Widget _buildUploadHero() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.primary.withValues(alpha: 0.3), width: 1.5),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: cs.shadow.withValues(alpha: 0.07),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: cs.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.cloud_upload_rounded, size: 32, color: cs.primary),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            '上传题目图片',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: cs.onSurface),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '支持 JPG / PNG，AI 自动识别并解题',
+            style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: _scanAndOpenResult,
+              icon: const Icon(Icons.upload_file_rounded, size: 18),
+              label: const Text('选择图片'),
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
             ),
           ),
         ],
@@ -782,11 +852,11 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: MediaQuery.sizeOf(context).width >= 900 ? 4 : 3,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              childAspectRatio: 1.5,
+              childAspectRatio: 2.0,
             ),
             itemCount: 7,
             itemBuilder: (BuildContext context, int index) {
@@ -873,29 +943,36 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
               ];
 
               final Map<String, dynamic> tool = tools[index];
-              return GestureDetector(
-                onTap: tool['onTap'] as VoidCallback,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: cs.primaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          tool['icon'] as IconData,
-                          color: cs.primary,
-                          size: 22,
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Material(
+                  color: cs.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    onTap: tool['onTap'] as VoidCallback,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: cs.outlineVariant),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(tool['icon'] as IconData, color: cs.primary, size: 20),
+                              const SizedBox(height: 4),
+                              Text(
+                                tool['name'] as String,
+                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          tool['name'] as String,
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

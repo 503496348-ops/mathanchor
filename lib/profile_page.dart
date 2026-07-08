@@ -6,6 +6,7 @@ import 'package:mathmate/grade_selection_page.dart';
 import 'package:mathmate/help_support_page.dart';
 import 'package:mathmate/history_list_page.dart';
 import 'package:mathmate/pages/login_page.dart';
+import 'package:mathmate/responsive/breakpoints.dart';
 import 'package:mathmate/services/auth_service.dart';
 import 'package:mathmate/services/theme_service.dart';
 import 'package:mathmate/services/update_service.dart';
@@ -62,7 +63,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+              padding: EdgeInsets.fromLTRB(
+                context.isDesktop ? (MediaQuery.sizeOf(context).width - 820) / 2 : 18,
+                12,
+                context.isDesktop ? (MediaQuery.sizeOf(context).width - 820) / 2 : 18,
+                24,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

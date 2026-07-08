@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:mathmate/responsive/breakpoints.dart';
 import 'note_editor_page.dart';
 import 'note_handwriting_editor_page.dart';
 import 'note_model.dart';
@@ -435,6 +436,9 @@ class _NotesPageState extends State<NotesPage> {
       body: filteredNotes.isEmpty
           ? const Center(child: Text("还没有笔记，点击+号创建"))
           : ListView.builder(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.isDesktop ? (MediaQuery.sizeOf(context).width - 900) / 2 : 0,
+              ),
               itemCount: filteredNotes.length,
               itemBuilder: (context, index) {
                 final note = filteredNotes[index];

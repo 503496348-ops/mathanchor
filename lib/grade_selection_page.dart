@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:mathmate/data/history_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mathmate/main.dart';
 import 'package:mathmate/tutorial_page.dart';
 
@@ -60,10 +62,19 @@ class _GradeSelectionPageState extends State<GradeSelectionPage> {
   }
 
   Future<int?> _getCurrentGrade() async {
+    if (kIsWeb) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      return prefs.getInt('web_grade');
+    }
     return HistoryRepository.instance.getGradeLevel();
   }
 
   Future<void> _saveGrade(int grade) async {
+    if (kIsWeb) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('web_grade', grade);
+      return;
+    }
     await HistoryRepository.instance.setGradeLevel(grade);
   }
 

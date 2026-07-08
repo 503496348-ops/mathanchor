@@ -84,7 +84,7 @@ class ResponsiveShell extends StatelessWidget {
       selectedIndex: currentIndex,
       onDestinationSelected: onTap,
       extended: true,
-      minExtendedWidth: 200,
+      minExtendedWidth: 260,
       backgroundColor: cs.surface,
       destinations: <NavigationRailDestination>[
         for (final NavTab tab in tabs)

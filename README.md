@@ -1,7 +1,5 @@
 <div align="center">
 
-  <img src="https://mathmate.top/images/overview.png" alt="MathMate Banner" width="800">
-
   <!-- MathMate Logo with Gradient -->
   <img src="assets/icon.png" alt="MathMate Logo" width="120" height="120">
 
@@ -37,10 +35,6 @@
 ### 🎨 交互式几何可视化
 
 核心创新技术：AI 自动从题目文本中抽取几何参数，自研 `GeometryPainter` 引擎（纯 Dart Canvas）实时渲染可交互图形。支持拖拽动点、轨迹动画，60fps 原生帧率。
-
-<p align="center">
-  <img src="https://mathmate.top/images/app-viz.jpg" width="260" alt="几何可视化">
-</p>
 
 ### 💬 AI 对话助手
 
@@ -219,7 +213,6 @@ lib/
 <p align="center">
   <img src="https://mathmate.top/images/app-search.jpg" width="220" alt="拍照识别">
   <img src="https://mathmate.top/images/app-result.jpg" width="220" alt="AI 求解">
-  <img src="https://mathmate.top/images/app-viz.jpg" width="220" alt="几何可视化">
 </p>
 
 ### 核心功能模块
