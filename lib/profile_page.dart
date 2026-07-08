@@ -5,7 +5,10 @@ import 'package:mathmate/data/history_repository.dart';
 import 'package:mathmate/grade_selection_page.dart';
 import 'package:mathmate/help_support_page.dart';
 import 'package:mathmate/history_list_page.dart';
+import 'package:mathmate/pages/ability_assessment_page.dart';
 import 'package:mathmate/pages/login_page.dart';
+import 'package:mathmate/profile_radar_chart.dart';
+import 'package:mathmate/services/ability_score_service.dart';
 import 'package:mathmate/services/auth_service.dart';
 import 'package:mathmate/services/theme_service.dart';
 import 'package:mathmate/services/update_service.dart';
@@ -13,7 +16,10 @@ import 'package:mathmate/services/user_profile_service.dart';
 import 'package:mathmate/tutorial_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  /// 雷达图动画触发器——每次递增时重建雷达图并重播中心展开动画。
+  final ValueNotifier<int>? radarTrigger;
+
+  const ProfilePage({super.key, this.radarTrigger});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -21,22 +27,39 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final UserProfileService _profileService = UserProfileService();
+  final AbilityScoreService _abilityService = AbilityScoreService();
+  /// 动画触发计数器，每次递增时雷达图重建并重播动画
+  int _animTrigger = 0;
 
   @override
   void initState() {
     super.initState();
     _profileService.addListener(_onProfileChanged);
     _profileService.load();
+    _abilityService.addListener(_onDataChanged);
+    _abilityService.load();
+    widget.radarTrigger?.addListener(_onRadarTrigger);
   }
 
   @override
   void dispose() {
     _profileService.removeListener(_onProfileChanged);
+    _abilityService.removeListener(_onDataChanged);
+    widget.radarTrigger?.removeListener(_onRadarTrigger);
     super.dispose();
   }
 
   void _onProfileChanged() {
     if (mounted) setState(() {});
+  }
+
+  void _onDataChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// 每次点击"我的"Tab 时触发雷达图动画重播
+  void _onRadarTrigger() {
+    if (mounted) setState(() => _animTrigger++);
   }
 
   @override
@@ -76,6 +99,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 22),
                   _buildHeader(cs),
+                  const SizedBox(height: 20),
+                  // ---- 六维能力雷达图 ----
+                  _buildRadarSection(cs),
                   const SizedBox(height: 26),
                   _MenuCard(
                     icon: Icons.settings_outlined,
@@ -102,6 +128,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (result != null && mounted) {
                         setState(() {});
                       }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
+                    icon: Icons.radar,
+                    title: '能力自评',
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AbilityAssessmentPage(isFromSettings: true),
+                        ),
+                      );
+                      if (mounted) setState(() {});
                     },
                   ),
                   const SizedBox(height: 10),
@@ -298,6 +337,75 @@ class _ProfilePageState extends State<ProfilePage> {
               label: const Text('登录 / 注册'),
             ),
           ],
+        ],
+      ),
+    );
+  }
+
+  /// 六维能力雷达图卡片
+  Widget _buildRadarSection(ColorScheme cs) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: cs.shadow.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const SizedBox(width: 8),
+              Icon(Icons.radar, size: 20, color: cs.primary),
+              const SizedBox(width: 8),
+              Text(
+                '能力画像',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const AbilityAssessmentPage(isFromSettings: true),
+                    ),
+                  );
+                  if (mounted) setState(() => _animTrigger++);
+                },
+                icon: Icon(Icons.refresh, size: 16, color: cs.primary),
+                label: Text(
+                  '重新评估',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: cs.primary,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // 通过 Key 变化触发重建 → initState 动画重播
+          ProfileRadarChart(
+            key: ValueKey<int>(_animTrigger),
+            profile: _abilityService.computedProfile,
+          ),
         ],
       ),
     );

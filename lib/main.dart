@@ -40,6 +40,8 @@ import 'package:mathmate/learner/services/profile_repository.dart';
 import 'package:mathmate/learner/widgets/profile_setup_dialog.dart';
 import 'package:mathmate/library/presentation/library_page.dart';
 import 'package:mathmate/library/services/material_repository.dart';
+import 'package:mathmate/pages/ability_assessment_page.dart';
+import 'package:mathmate/services/ability_score_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,23 +73,33 @@ Future<void> main() async {
   }
   await ThemeService.instance.init();
   await MaterialRepository.instance.init();
+  await AbilityScoreService().load();
 
   // 多智能体注册（软件杯参赛：多智能体协同架构）
   Orchestrator.instance.register(VisualizerAgent());
 
   final bool isFirst = kIsWeb ? true : await HistoryRepository.instance.isFirstLaunch();
   final bool tutorialCompleted = kIsWeb ? false : await HistoryRepository.instance.isTutorialCompleted();
+  // 已有年级但未完成能力自评的用户，引导至自评页
+  final bool needsAssessment = !isFirst && !AbilityScoreService().hasAssessment;
   runApp(MathMateApp(
     checkFirstLaunch: isFirst,
-    showTutorial: !tutorialCompleted && !isFirst,
+    showTutorial: !tutorialCompleted && !isFirst && !needsAssessment,
+    showAssessment: needsAssessment,
   ));
 }
 
 class MathMateApp extends StatefulWidget {
   final bool checkFirstLaunch;
   final bool showTutorial;
+  final bool showAssessment;
 
-  const MathMateApp({super.key, required this.checkFirstLaunch, this.showTutorial = false});
+  const MathMateApp({
+    super.key,
+    required this.checkFirstLaunch,
+    this.showTutorial = false,
+    this.showAssessment = false,
+  });
 
   @override
   State<MathMateApp> createState() => _MathMateAppState();
@@ -174,6 +186,10 @@ class _MathMateAppState extends State<MathMateApp> {
 
   Widget _getInitialPage() {
     if (widget.checkFirstLaunch) return const GradeSelectionPage();
+    if (widget.showAssessment) {
+      // 已有年级但未完成能力自评 → 引导自评后进入主页
+      return AbilityAssessmentPage(nextPage: const MainScreen());
+    }
     if (widget.showTutorial) return const TutorialPage();
     return const MainScreen();
   }
@@ -188,12 +204,24 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  /// 用于通知 ProfilePage 的雷达图触发计数器（每次点击"我的"Tab 递增）
+  final ValueNotifier<int> _radarTrigger = ValueNotifier<int>(0);
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages = const <Widget>[QuestionHomePage(), NotesPage(), ProfilePage()];
+    _pages = <Widget>[
+      const QuestionHomePage(),
+      const NotesPage(),
+      ProfilePage(radarTrigger: _radarTrigger),
+    ];
+  }
+
+  @override
+  void dispose() {
+    _radarTrigger.dispose();
+    super.dispose();
   }
 
   @override
@@ -201,7 +229,13 @@ class _MainScreenState extends State<MainScreen> {
     // 桌面端导航壳：宽屏自动切换为 NavigationRail，窄屏保持原底部导航外观。
     return ResponsiveShell(
       currentIndex: _currentIndex,
-      onTap: (int index) => setState(() => _currentIndex = index),
+      onTap: (int index) {
+        setState(() => _currentIndex = index);
+        // 每次点击"我的"Tab 都触发雷达图动画（包括重复点击）
+        if (index == 2) {
+          _radarTrigger.value++;
+        }
+      },
       pages: _pages,
       tabs: const <NavTab>[
         NavTab(icon: Icons.grid_view_rounded, label: '题目'),
