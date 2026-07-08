@@ -64,11 +64,24 @@
 
 ## 🎬 产品演示
 
-<p align="center">
-  <a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/"><img src="https://mathmate.top/images/video-cover.jpg" width="600" alt="MathMate 产品演示"></a>
-</p>
+<table align="center">
+<tr>
+<td align="center" width="600">
 
-**👆 点击观看完整演示视频（3 分钟）**
+<a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 40px 30px; text-align: center; color: white;">
+    <div style="font-size: 60px; margin-bottom: 16px;">▶️</div>
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">MathMate 产品演示视频</div>
+    <div style="font-size: 14px; opacity: 0.9;">AI 拍照搜题 · 几何可视化 · 智能对话 · 数学工具箱</div>
+    <div style="margin-top: 16px; display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; font-size: 13px;">
+      🕐 时长 3 分钟 · 点击播放
+    </div>
+  </div>
+</a>
+
+</td>
+</tr>
+</table>
 
 ---
 
