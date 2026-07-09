@@ -56,10 +56,6 @@ class AbilityScoreService extends ChangeNotifier {
   /// 超参数
   static const double n0 = 5.0; // 初始虚拟样本量
   static const double lambda = 30.0; // 题量成长半衰期
-  static const double lambdaComputation = 60.0; // 计算能力增长半衰期（更慢）
-
-  /// 计算能力维度索引
-  static const int computationIndex = 0;
 
   /// 用户自评分数（1~5）
   UserRadarProfile? _selfAssessment;
@@ -120,15 +116,12 @@ class AbilityScoreService extends ChangeNotifier {
   }
 
   /// 更新某维度的答题统计（供题库模块调用）
-  ///
-  /// 注意：计算能力（index 0）不接收独立答题统计，
-  /// 传入 0 会被忽略，其分数由其他维度的聚合数据自动计算。
   Future<void> recordAnswer({
     required int dimensionIndex,
     required bool isCorrect,
     double difficulty = 3.0,
   }) async {
-    if (dimensionIndex <= 0 || dimensionIndex >= _stats.length) return;
+    if (dimensionIndex < 0 || dimensionIndex >= _stats.length) return;
 
     final DimensionStats s = _stats[dimensionIndex];
     // 指数移动平均更新难度
@@ -142,9 +135,8 @@ class AbilityScoreService extends ChangeNotifier {
 
   /// 计算某个维度的最终能力分（核心算法）
   ///
-  /// [dimensionIndex] 维度索引。
-  /// - 索引 0（计算能力）：聚合维度 1~5 的总做题量 + 总正确率，慢增长，不低于自评。
-  /// - 其他索引：使用该维度独立的答题统计计算。
+  /// [dimensionIndex] 维度索引（0~5，对应六个数学能力维度）。
+  /// 所有维度统一使用标准三阶算法计算。
   ///
   /// 返回 1.0 ~ 5.0 的分数
   double calculateScore(int dimensionIndex) {
@@ -153,12 +145,6 @@ class AbilityScoreService extends ChangeNotifier {
       return 1.0;
     }
 
-    // 计算能力：聚合其他维度统计，缓慢提升
-    if (dimensionIndex == computationIndex) {
-      return _calculateComputationScore();
-    }
-
-    // 其他维度：标准标签驱动算法
     final double self =
         _selfAssessment?.scores[dimensionIndex] ?? 1.0;
     final DimensionStats s = _stats[dimensionIndex];
@@ -173,46 +159,6 @@ class AbilityScoreService extends ChangeNotifier {
       D: D,
       lambdaValue: lambda,
     );
-  }
-
-  /// 计算能力专属算法：
-  /// 聚合维度 1~5 的总做题量和总正确率，
-  /// 使用更慢的增长曲线（λ=60），且分数不低于自评值。
-  double _calculateComputationScore() {
-    // 聚合其他 5 个维度的统计数据
-    int totalN = 0;
-    int totalCorrect = 0;
-    double totalDifficultyWeight = 0;
-    double weightedDifficulty = 0;
-
-    for (int i = 1; i < _stats.length; i++) {
-      final DimensionStats s = _stats[i];
-      totalN += s.totalQuestions;
-      totalCorrect += s.correctQuestions;
-      if (s.totalQuestions > 0) {
-        weightedDifficulty += s.avgDifficulty * s.totalQuestions;
-        totalDifficultyWeight += s.totalQuestions;
-      }
-    }
-
-    final double R =
-        totalN > 0 ? totalCorrect / totalN : 0.0;
-    final double D = totalDifficultyWeight > 0
-        ? (weightedDifficulty / totalDifficultyWeight).clamp(1.0, 5.0)
-        : 3.0;
-
-    final double self = _selfAssessment?.scores[computationIndex] ?? 1.0;
-
-    final double score = _applyAlgorithm(
-      self: self,
-      N: totalN,
-      R: R,
-      D: D,
-      lambdaValue: lambdaComputation,
-    );
-
-    // 计算能力只升不降，不低于自评分数
-    return score.clamp(self, 5.0);
   }
 
   /// 通用三阶算法

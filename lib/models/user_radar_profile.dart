@@ -4,13 +4,23 @@
 class UserRadarProfile {
   /// 维度名称列表（按六边形顶点顺序，从顶部顺时针排列）
   static const List<String> dimensionNames = [
-    '计算能力',
-    '解析几何',
-    '函数导数',
-    '空间想象',
-    '数列计算',
-    '概率论',
+    '基础代数工具',
+    '函数微积分',
+    '数列三角',
+    '平面与空间几何',
+    '概率统计',
+    '组合计数',
   ];
+
+  /// 维度 → 题库标签映射（用于服务器题目匹配）
+  static const Map<String, List<String>> dimensionTags = <String, List<String>>{
+    '基础代数工具': <String>['集合与逻辑', '复数', '不等式'],
+    '函数微积分': <String>['函数与导数'],
+    '数列三角': <String>['数列', '三角函数'],
+    '平面与空间几何': <String>['向量', '立体几何', '解析几何'],
+    '概率统计': <String>['概率统计'],
+    '组合计数': <String>['计数原理'],
+  };
 
   /// 内部满分值
   static const double maxScore = 5.0;
