@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mathmate/data/history_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mathmate/main.dart';
+import 'package:mathmate/pages/ability_assessment_page.dart';
 import 'package:mathmate/tutorial_page.dart';
 
 class GradeSelectionPage extends StatefulWidget {
@@ -195,8 +196,13 @@ class _GradeSelectionPageState extends State<GradeSelectionPage> {
                       if (widget.isFromSettings) {
                         navigator.pop(_selectedGrade);
                       } else {
+                        // 年级选择后 → 能力自评 → 新手引导
                         navigator.pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (_) => const TutorialPage()),
+                          MaterialPageRoute(
+                            builder: (_) => AbilityAssessmentPage(
+                              nextPage: const TutorialPage(),
+                            ),
+                          ),
                           (Route<dynamic> route) => false,
                         );
                       }
