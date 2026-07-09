@@ -304,7 +304,13 @@ lib/
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=mzk-C4/mathmate&type=Date)](https://star-history.com/#mzk-C4/mathmate&Date)
+<p align="center">
+  <a href="https://github.com/mzk-C4/mathmate/stargazers">
+    <img src="assets/star_badge.svg" alt="GitHub stars">
+  </a>
+</p>
+
+感谢所有给本项目点 Star 的朋友们！ ⭐
 
 ---
 
