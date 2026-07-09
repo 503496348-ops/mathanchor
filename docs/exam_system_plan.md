@@ -1,8 +1,8 @@
-# MathMate 考试系统 + 云端题库 建设计划
+# 数理锚点 考试系统 + 云端题库 建设计划
 
 > 版本 v1.0 · 2026-07-08 · 目标：题库上云多人协作 + 考试（组卷/判卷/评估）闭环
 >
-> 决策（已确认）：① 题库来源 = 自有题库录入 + 真题 PDF 抽题 + add 开源数据打标；② 云端复用 mathmate.top Node 后端；③ 协作 = 共录内容 + 共写代码 + 多端共享
+> 决策（已确认）：① 题库来源 = 自有题库录入 + 真题 PDF 抽题 + add 开源数据打标；② 云端复用 your-domain.com Node 后端；③ 协作 = 共录内容 + 共写代码 + 多端共享
 
 ---
 
@@ -20,7 +20,7 @@
 | 学习画像 `mastery`/`weakTopics`/`preferredDifficulty` | ⚠️ 字段已存在**但无代码写入** | 考试判卷结果回写，激活闭环 |
 | 题库(Question/Repository) / 组卷 / 判卷 / 评估 / 雷达图 | ❌ 完全没有 | 从零建 |
 | 出题 Agent(quizzer) | ❌ 仅枚举占位 | 新建 `QuizzerAgent` |
-| 云端 mathmate.top | ✅ Node(:3001)+auth(:3002)+Nginx+PM2 | 加题库 API |
+| 云端 your-domain.com | ✅ Node(:3001)+auth(:3002)+Nginx+PM2 | 加题库 API |
 
 **add 文件夹现实（已核实）**：
 - ★ **真实中文真题（核心数据源）**：
@@ -36,7 +36,7 @@
 ## 2. 整体架构
 
 ```
-   数据来源                              云端 mathmate.top                    App 多端
+   数据来源                              云端 your-domain.com                    App 多端
  ┌───────────────┐                ┌─────────────────────────┐         ┌──────────────┐
  │ 自有题库Excel │──批量导入──┐   │  题库 API  /api/library/ │         │  题库浏览    │
  │ 真题 PDF      │──OCR抽题──┼──▶│  (Node, 复用 :3001 或新  │◀──────▶│  组卷        │
@@ -99,11 +99,11 @@
 
 ---
 
-## 5. 云端方案（复用 mathmate.top）
+## 5. 云端方案（复用 your-domain.com）
 
 ### 5.1 部署
-- **推荐**：在现有 `mathmate-proxy`（:3001，`/opt/mathmate/proxy_server.js`）里**加题库路由**，挂 Nginx `/api/library/`。最快，复用现有认证/HTTPS/PM2。
-- 备选：新起 `mathmate-library`（:3004）独立微服务，Nginx 加 `/api/library/ → :3004`。
+- **推荐**：在现有 `mathanchor-proxy`（:3001，`/opt/mathanchor/proxy_server.js`）里**加题库路由**，挂 Nginx `/api/library/`。最快，复用现有认证/HTTPS/PM2。
+- 备选：新起 `mathanchor-library`（:3004）独立微服务，Nginx 加 `/api/library/ → :3004`。
 
 ### 5.2 API（REST，复用 auth_server 的 token）
 ```
@@ -130,7 +130,7 @@
 ```
 
 ### 5.3 存储
-- **起步**：SQLite（`/opt/mathmate/data/library.db`）——单服务器、零运维、题库千级够用。
+- **起步**：SQLite（`/opt/mathanchor/data/library.db`）——单服务器、零运维、题库千级够用。
 - **扩容**：上 MySQL/Postgres（题库破万或多人高频写时再迁）。
 
 ### 5.4 协作

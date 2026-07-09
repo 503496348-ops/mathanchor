@@ -54,7 +54,7 @@ VOLC_BASE_URL=https://ark.cn-beijing.volces.com/api/v3/chat/completions
 
 ## 架构概览
 
-MathMate 是一款 Flutter 数学学习助手应用，使用 Material Design (Material 3)，面向移动端 (Android/iOS)。应用界面为中文，支持 zh_CN / en_US 多语言本地化。
+数理锚点 是一款 Flutter 数学学习助手应用，使用 Material Design (Material 3)，面向移动端 (Android/iOS)。应用界面为中文，支持 zh_CN / en_US 多语言本地化。
 
 ### 状态管理：无外部状态管理库
 

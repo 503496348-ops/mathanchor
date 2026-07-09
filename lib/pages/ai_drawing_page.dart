@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/fusion/models/ai_models.dart';
-import 'package:mathmate/fusion/ai_drawing/services/ai_drawing_service.dart';
-import 'package:mathmate/fusion/ai_drawing/widgets/code_viewer.dart';
+import 'package:math_anchor/fusion/models/ai_models.dart';
+import 'package:math_anchor/fusion/ai_drawing/services/ai_drawing_service.dart';
+import 'package:math_anchor/fusion/ai_drawing/widgets/code_viewer.dart';
 
 /// AI 绘图页面
 ///

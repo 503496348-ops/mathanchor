@@ -3,15 +3,13 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/services/app_logger.dart';
 
 class VolcAiClientService {
   static const String _apiKeyEnv = 'VOLC_API_KEY';
-  static const String _baseUrlEnv = 'VOLC_BASE_URL';
   static const String _defaultModelEnv = 'VOLC_MODEL_ID';
   static const String _requestFormatEnv = 'VOLC_REQUEST_FORMAT';
-  static const String _defaultBaseUrl =
-      'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
 
   static bool _dotenvLoaded = false;
 
@@ -60,7 +58,7 @@ class VolcAiClientService {
   }) async {
     return _request(
       modelEnv: modelEnv,
-      messages: <Map<String, String>>[
+      messages: <Map<String, dynamic>>[
         <String, String>{'role': 'system', 'content': prompt},
         <String, String>{'role': 'user', 'content': userText},
       ],
@@ -76,7 +74,7 @@ class VolcAiClientService {
     final String apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
     final String modelId =
         (dotenv.env[modelEnv] ?? dotenv.env[_defaultModelEnv] ?? '').trim();
-    final String baseUrl = (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+    final String baseUrl = AppSkinConfig.volcBaseUrl;
     final String requestFormat =
         (dotenv.env[_requestFormatEnv] ?? 'auto').trim().toLowerCase();
 
@@ -122,15 +120,21 @@ class VolcAiClientService {
     sw.stop();
     AppLogger.instance.info('[Volc] 请求耗时: ${sw.elapsedMilliseconds}ms');
 
+    final String rawBody = utf8.decode(response.bodyBytes);
     if (response.statusCode != 200) {
-      final String detail = utf8.decode(response.bodyBytes);
-      AppLogger.instance.error('[Volc] 错误响应体($modelEnv): $detail');
-      throw Exception('Volc API error($modelEnv): $detail');
+      AppLogger.instance.error('[Volc] 错误响应体($modelEnv): $rawBody');
+      throw Exception('Volc API error($modelEnv): $rawBody');
     }
 
-    final String rawBody = utf8.decode(response.bodyBytes);
     AppLogger.instance.info('[Volc] 响应体长度: ${rawBody.length} 字符');
-    final dynamic data = jsonDecode(rawBody);
+    dynamic data;
+    try {
+      data = jsonDecode(rawBody);
+    } catch (e) {
+      AppLogger.instance.error('[Volc] 响应非 JSON: $e');
+      throw Exception('Volc API returned invalid json: ${e.toString()}');
+    }
+
     final String parsed = _extractContentFromResponse(data).trim();
 
     AppLogger.instance.info('[Volc] 提取内容长度: ${parsed.length} 字符');

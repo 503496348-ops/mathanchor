@@ -1,10 +1,10 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/models/pipeline_models.dart';
-import 'package:mathmate/models/pipeline_stage.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/ocr_service.dart';
-import 'package:mathmate/services/solver_service.dart';
-import 'package:mathmate/services/visualization_service.dart';
+import 'package:math_anchor/models/pipeline_models.dart';
+import 'package:math_anchor/models/pipeline_stage.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/ocr_service.dart';
+import 'package:math_anchor/services/solver_service.dart';
+import 'package:math_anchor/services/visualization_service.dart';
 
 class MathPipelineService {
   final OcrService _ocrService;

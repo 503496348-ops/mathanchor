@@ -1,6 +1,6 @@
-# MathMate GitHub 资源配置指南
+# 数理锚点 GitHub 资源配置指南
 
-本指南说明如何在 GitHub 上正确配置 MathMate 项目的图片和视频资源。
+本指南说明如何在 GitHub 上正确配置 数理锚点 项目的图片和视频资源。
 
 ## 🖼️ 图片资源配置
 
@@ -11,7 +11,7 @@
 ```bash
 # 1. 创建 GitHub Release
 gh release create v2.3.2 \
-  --title "MathMate v2.3.2" \
+  --title "数理锚点 v2.3.2" \
   --notes "Release notes here"
 
 # 2. 上传截图
@@ -24,7 +24,7 @@ gh release upload v2.3.2 \
 然后在 README 中引用：
 
 ```markdown
-![拍照搜题](https://github.com/mzk-C4/mathmate/releases/download/v2.3.2/screenshot-1.jpg)
+![拍照搜题](https://github.com/mzk-C4/mathanchor/releases/download/v2.3.2/screenshot-1.jpg)
 ```
 
 ### 方式二：使用 GitHub Issue Comments
@@ -69,7 +69,7 @@ git push
 完整示例：
 
 ```markdown
-[![MathMate 产品演示](images/video-cover.jpg)](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
+[![数理锚点 产品演示](images/video-cover.jpg)](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
 ```
 
 ### YouTube 视频
@@ -134,7 +134,7 @@ screenshot-notes-handwriting.jpg   # 笔记 - 手写
 README.md 中使用了占位符 URL：
 
 ```markdown
-![截图](https://github.com/mzk-C4/mathmate/assets/your-username/screenshot-1.jpg)
+![截图](https://github.com/mzk-C4/mathanchor/assets/your-username/screenshot-1.jpg)
 ```
 
 将 `your-username` 替换为你的 GitHub 用户名，`screenshot-1.jpg` 替换为实际图片文件名。

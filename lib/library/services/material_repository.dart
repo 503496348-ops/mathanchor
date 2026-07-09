@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mathmate/library/models/study_material.dart';
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/library/models/study_material.dart';
+import 'package:math_anchor/services/app_logger.dart';
 
 /// 学习资料存储 —— 复刻 ProfileRepository 的 Box<String> + JSON 方案
 ///

@@ -1,4 +1,4 @@
-import 'package:mathmate/learner/models/learner_profile.dart';
+import 'package:math_anchor/learner/models/learner_profile.dart';
 
 /// 智能体类型 —— 对应赛题「多智能体协同」的不同角色
 enum AgentType {

@@ -1,4 +1,4 @@
-import 'package:mathmate/data/models_web_conversation.dart';
+import 'package:math_anchor/data/models_web_conversation.dart';
 
 class ConversationRepository {
   ConversationRepository._();

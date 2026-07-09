@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mathmate/data/hive_conversation_models.dart';
+import 'package:math_anchor/data/hive_conversation_models.dart';
 
 const String _kConversationBoxName = 'math_conversation';
 

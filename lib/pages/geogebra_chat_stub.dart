@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 /// 移动端 GeoGebra 聊天页面 — 通过 WebView 加载服务器上的 chat-with-geogebra。
 class GeogebraChatPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _GeogebraChatPageState extends State<GeogebraChatPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('http://47.94.83.150:3003/chat'));
+      ..loadRequest(Uri.parse(AppSkinConfig.geogebraChatUrl));
   }
 
   @override

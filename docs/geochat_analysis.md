@@ -7,7 +7,7 @@
 - [工具系统 (Tools)](#工具系统-tools)
 - [GeoGebra 集成机制](#geogebra-集成机制)
 - [关键代码实现](#关键代码实现)
-- [对 MathMate 的借鉴价值](#对-mathmate-的借鉴价值)
+- [对 数理锚点 的借鉴价值](#对-mathanchor-的借鉴价值)
 
 ---
 
@@ -365,7 +365,7 @@ export interface GeoGebraCommands {
 
 ---
 
-## 🎓 对 MathMate 的借鉴价值
+## 🎓 对 数理锚点 的借鉴价值
 
 ### 1. **Prompt Engineering 策略**
 
@@ -376,10 +376,10 @@ GeoChat 的 Prompt 设计非常值得学习：
 感知 → 推理 → 规划 → 行动 → 反思
 ```
 
-MathMate 可以借鉴这个框架来处理几何可视化：
+数理锚点 可以借鉴这个框架来处理几何可视化：
 
 ```typescript
-// MathMate 几何可视化五阶段
+// 数理锚点 几何可视化五阶段
 1. 感知：理解题目中的几何描述
 2. 推理：抽取几何参数和约束条件
 3. 规划：确定需要渲染的图元
@@ -390,7 +390,7 @@ MathMate 可以借鉴这个框架来处理几何可视化：
 #### ✅ **错误自愈机制**
 GeoChat 实现了 LLM 自动检测并修复 GeoGebra 命令错误的能力。
 
-MathMate 可以实现类似机制：
+数理锚点 可以实现类似机制：
 - 检测渲染异常
 - 自动调整参数
 - 重新生成几何 JSON
@@ -399,10 +399,10 @@ MathMate 可以实现类似机制：
 
 GeoChat 的工具系统是典型的 **MCP (Model Context Protocol)** 实现。
 
-MathMate 可以借鉴：
+数理锚点 可以借鉴：
 
 ```typescript
-// MathMate 的工具系统
+// 数理锚点 的工具系统
 const tools = {
   // 几何相关
   createPoint: tool({...}),
@@ -428,10 +428,10 @@ const tools = {
 
 GeoChat 实现了 **增量绘图** - 不重绘整个画布，而是根据上下文添加新对象。
 
-MathMate 的 GeometryPainter 可以借鉴：
+数理锚点 的 GeometryPainter 可以借鉴：
 
 ```typescript
-// 当前 MathMate 的方式
+// 当前 数理锚点 的方式
 geometryPainter.clear();
 geometryPainter.render(json);  // 每次都重新渲染
 
@@ -447,10 +447,10 @@ geometryPainter.updateObjects(json.updatedElements);  // 更新
 
 GeoChat 支持 **DeepSeek / OpenAI / Gemini** 多种模型。
 
-MathMate 可以扩展为：
+数理锚点 可以扩展为：
 
 ```typescript
-// MathMate 的多模型协作
+// 数理锚点 的多模型协作
 const modelPipeline = {
   ocr: "VolcEngine",           // 题目识别
   solver: "DeepSeek",          // 数学推理
@@ -463,10 +463,10 @@ const modelPipeline = {
 
 GeoChat 实现了流式响应，每执行 1-3 条命令就反馈一次。
 
-MathMate 可以实现类似机制：
+数理锚点 可以实现类似机制：
 
 ```typescript
-// MathMate 实时反馈
+// 数理锚点 实时反馈
 async function* solveProblem(image: Image) {
   // 1. OCR 识别
   yield { status: "recognizing", progress: 20 };
@@ -496,7 +496,7 @@ async function* solveProblem(image: Image) {
 6. **几何约束优先** - 使用约束而非硬编码，保持动态关联
 7. **增量绘图** - 根据上下文增量添加对象
 
-### MathMate 可以借鉴的设计
+### 数理锚点 可以借鉴的设计
 
 1. **Prompt Engineering**
    - 设计专门的"数学几何可视化专家"角色

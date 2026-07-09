@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/visualization/models.dart';
-import 'package:mathmate/visualization/geometry_painter.dart';
-import 'package:mathmate/visualization/safe_json_parser.dart';
+import 'package:math_anchor/visualization/models.dart';
+import 'package:math_anchor/visualization/geometry_painter.dart';
+import 'package:math_anchor/visualization/safe_json_parser.dart';
 
 class VisualizationPage extends StatefulWidget {
   final Map<String, dynamic> scene;

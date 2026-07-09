@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
-class AboutMathMatePage extends StatelessWidget {
-  const AboutMathMatePage({super.key});
+class AboutMathAnchorPage extends StatelessWidget {
+  const AboutMathAnchorPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('关于 MathMate')),
+      appBar: AppBar(title: Text('关于 ${AppSkinConfig.appName}')),
       backgroundColor: const Color(0xFFF7FAFF),
       body: Center(
         child: Container(
@@ -23,17 +24,17 @@ class AboutMathMatePage extends StatelessWidget {
               ),
             ],
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Icon(Icons.calculate_rounded, size: 52, color: Color(0xFF3F51B5)),
               SizedBox(height: 12),
               Text(
-                'MathMate',
+                AppSkinConfig.appName,
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
               ),
               SizedBox(height: 6),
-              Text('Version 1.0.0', style: TextStyle(color: Color(0xFF8E98A8))),
+              Text('Version ${AppSkinConfig.appVersion}', style: const TextStyle(color: Color(0xFF8E98A8))),
               SizedBox(height: 12),
               Text(
                 '拍照识别 + AI 解题 + 几何可视化\n让数学学习更直观。',

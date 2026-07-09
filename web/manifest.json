@@ -1,6 +1,6 @@
 {
-    "name": "mathmate",
-    "short_name": "mathmate",
+    "name": "math_anchor",
+    "short_name": "mathanchor",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

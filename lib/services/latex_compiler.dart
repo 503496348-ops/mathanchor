@@ -50,7 +50,7 @@ class LatexCompiler {
       );
 
       final Directory dir = await getApplicationDocumentsDirectory();
-      final String path = '${dir.path}/mathmate_chat_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final String path = '${dir.path}/mathanchor_chat_${DateTime.now().millisecondsSinceEpoch}.pdf';
       final File file = File(path);
       await file.writeAsBytes(await pdf.save());
 

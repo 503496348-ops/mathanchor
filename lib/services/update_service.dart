@@ -7,6 +7,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:math_anchor/config/app_skin_config.dart';
+
 /// 版本信息模型
 class AppVersion {
   final String version;
@@ -33,34 +35,68 @@ class AppVersion {
 
 /// 联网自动更新服务。
 ///
-/// 启动时自动检查 mathmate.top/version.json，有新版本则弹窗提示更新。
-/// Android 端支持下载 APK 后自动唤起安装器。
+/// 启动时若配置 APP_UPDATE_VERSION_URL，则检查该地址返回的 version.json。
 class UpdateService {
-  static const String _versionUrl = 'https://mathmate.top/version.json';
-
-  /// 当前 APP 版本号（与 pubspec.yaml 保持同步）
-  static const int currentBuildNumber = 20260601;
-  static const String currentVersion = '2.3.0';
-
   /// 是否正在下载
   static bool _isDownloading = false;
+
+  /// 解析语义版本（支持 1.2.3）。解析失败返回 0。只作版本比较兜底。
+  static int _versionCode(String version) {
+    final List<String> parts = version.split('.');
+    int code = 0;
+    for (int i = 0; i < parts.length && i < 3; i++) {
+      final int? num = int.tryParse(parts[i].trim());
+      if (num == null) {
+        continue;
+      }
+      code = code * 1000 + num;
+    }
+    return code;
+  }
+
+  /// 当前版本号。
+  static int get _currentBuildNumber {
+    if (AppSkinConfig.updateCurrentBuildNumber > 0) {
+      return AppSkinConfig.updateCurrentBuildNumber;
+    }
+    return _versionCode(AppSkinConfig.updateCurrentVersion);
+  }
 
   /// 检查更新。返回最新版本信息，若已是最新则返回 null。
   static Future<AppVersion?> checkUpdate() async {
     try {
-      final response = await http
-          .get(Uri.parse(_versionUrl))
+      final String versionUrl = AppSkinConfig.updateVersionUrl;
+      if (versionUrl.isEmpty) {
+        return null;
+      }
+
+      final Uri uri = Uri.parse(versionUrl);
+      if (uri.scheme.isEmpty) {
+        return null;
+      }
+
+      final http.Response response = await http
+          .get(uri)
           .timeout(const Duration(seconds: 8));
 
       if (response.statusCode != 200) return null;
 
-      final json = jsonDecode(response.body) as Map<String, dynamic>;
-      final latest = AppVersion.fromJson(json);
-
-      if (latest.buildNumber > currentBuildNumber) {
-        return latest;
+      final dynamic jsonBody = jsonDecode(utf8.decode(response.bodyBytes));
+      if (jsonBody is! Map<String, dynamic>) {
+        return null;
       }
-      return null;
+      final AppVersion latest = AppVersion.fromJson(jsonBody);
+
+      if (latest.version.isEmpty && latest.buildNumber <= 0) {
+        return null;
+      }
+
+      final bool shouldUpdate = latest.buildNumber > _currentBuildNumber &&
+          (latest.version.isNotEmpty
+              ? _versionCode(latest.version) >= _versionCode(AppSkinConfig.updateCurrentVersion)
+              : true);
+
+      return shouldUpdate ? latest : null;
     } catch (_) {
       return null;
     }
@@ -84,7 +120,9 @@ class UpdateService {
 
     try {
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/mathmate-${version.version}.apk');
+      final safeFileName =
+          version.version.isNotEmpty ? '${version.version}.apk' : 'app-release.apk';
+      final file = File('${dir.path}/$safeFileName');
 
       final response = await http.get(Uri.parse(version.apkUrl));
       if (response.statusCode != 200) return '下载失败: HTTP ${response.statusCode}';

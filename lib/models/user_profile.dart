@@ -5,7 +5,7 @@ class UserProfile {
   String bio;
 
   UserProfile({
-    this.nickname = 'MathMate_User',
+    this.nickname = '用户昵称',
     this.avatar = '',
     this.grade = 'Math Explorer',
     this.bio = '',
@@ -19,7 +19,7 @@ class UserProfile {
       };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
-        nickname: json['nickname'] as String? ?? 'MathMate_User',
+        nickname: json['nickname'] as String? ?? '用户昵称',
         avatar: json['avatar'] as String? ?? '',
         grade: json['grade'] as String? ?? 'Math Explorer',
         bio: json['bio'] as String? ?? '',

@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mathmate/data/models_web.dart';
+import 'package:math_anchor/data/models_web.dart';
 
 class HistoryRepository {
   HistoryRepository._();

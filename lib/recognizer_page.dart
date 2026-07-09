@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/beautiful_result_page.dart';
-import 'package:mathmate/scanner/enhanced_crop_page.dart';
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/beautiful_result_page.dart';
+import 'package:math_anchor/scanner/enhanced_crop_page.dart';
+import 'package:math_anchor/services/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RecognizerPage extends StatefulWidget {

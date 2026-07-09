@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:mathmate/math_recognizer.dart';
-import 'package:mathmate/visualization/geometry_validator.dart';
-import 'package:mathmate/visualization/response_extractor.dart';
+import 'package:math_anchor/math_recognizer.dart';
+import 'package:math_anchor/visualization/geometry_validator.dart';
+import 'package:math_anchor/visualization/response_extractor.dart';
 
 @Deprecated('Use BeautifulResultPage instead. This page is no longer in use.')
 class ResultPage extends StatefulWidget {

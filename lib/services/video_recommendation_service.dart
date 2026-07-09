@@ -3,17 +3,15 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mathmate/data/hive_models.dart';
-import 'package:mathmate/data/history_repository.dart';
-import 'package:mathmate/data/video_resources.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/data/hive_models.dart';
+import 'package:math_anchor/data/history_repository.dart';
+import 'package:math_anchor/data/video_resources.dart';
 
 class VideoRecommendationService {
   static const String _apiKeyEnv = 'VIVO_API_KEY';
   static const String _modelEnv = 'VIVO_MODEL_ID';
   static const String _baseUrlEnv = 'VIVO_BASE_URL';
-  static const String _defaultModel = 'qwen-plus';
-  static const String _defaultBaseUrl =
-      'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 
   static bool _dotenvLoaded = false;
 
@@ -35,9 +33,9 @@ class VideoRecommendationService {
         return <VideoResource>[];
       }
 
-      final String modelId = (dotenv.env[_modelEnv] ?? _defaultModel).trim();
-      final String baseUrl =
-          (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+      final String modelId =
+          (dotenv.env[_modelEnv] ?? AppSkinConfig.vivoModelId).trim();
+      final String baseUrl = (dotenv.env[_baseUrlEnv] ?? AppSkinConfig.vivoBaseUrl).trim();
 
       // 获取年级信息
       final int? grade = await HistoryRepository.instance.getGradeLevel();
@@ -243,9 +241,9 @@ $videoDb
         return <String>[];
       }
 
-      final String modelId = (dotenv.env[_modelEnv] ?? _defaultModel).trim();
+      final String modelId = (dotenv.env[_modelEnv] ?? AppSkinConfig.vivoModelId).trim();
       final String baseUrl =
-          (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+          (dotenv.env[_baseUrlEnv] ?? AppSkinConfig.vivoBaseUrl).trim();
 
       final String prompt = '''
 请从以下数学题目中提取关键词（数学概念、题型类别等），只返回关键词，用逗号分隔，最多返回5个关键词。

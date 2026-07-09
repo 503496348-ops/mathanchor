@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:mathmate/responsive/breakpoints.dart';
+import 'package:math_anchor/responsive/breakpoints.dart';
 import 'note_editor_page.dart';
 import 'note_handwriting_editor_page.dart';
 import 'note_model.dart';
@@ -109,7 +109,7 @@ class _NotesPageState extends State<NotesPage> {
     final fileName = pickedFile.name;
 
     final docDir = await getApplicationDocumentsDirectory();
-    final appDir = Directory('${docDir.path}/mathmate_pdfs');
+    final appDir = Directory('${docDir.path}/mathanchor_pdfs');
     if (!await appDir.exists()) await appDir.create(recursive: true);
     final destPath = '${appDir.path}/$fileName';
     await File(srcPath).copy(destPath);

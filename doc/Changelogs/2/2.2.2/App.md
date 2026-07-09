@@ -1,4 +1,4 @@
-# MathMate v2.3.0 更新日志
+# 数理锚点 v2.3.0 更新日志
 
 ## 发布日期
 2026-05-30
@@ -38,9 +38,9 @@ v2.3.0
   - 文件：`docs/geochat_analysis.md`
   - 内容：GeoChat 功能分析和技术说明
 
-- **新增 MathMate 介绍页面**
+- **新增 数理锚点 介绍页面**
   - 文件：`introduction.html`
-  - 内容：MathMate 产品介绍页面
+  - 内容：数理锚点 产品介绍页面
 
 #### 3. 服务器备份
 - **新增服务器备份目录**
@@ -95,7 +95,7 @@ v2.3.0
 | `lib/geogebra_page_web.dart` | Web端GeoGebra页面 |
 | `lib/services/prompts/geogebra_agent_prompt.dart` | GeoGebra Agent提示词 |
 | `docs/geochat_analysis.md` | GeoChat功能分析文档 |
-| `introduction.html` | MathMate介绍页面 |
+| `introduction.html` | 数理锚点介绍页面 |
 | `server-backup/*` | 服务器配置备份 |
 
 ### 修改文件
@@ -145,7 +145,7 @@ v2.3.0
 
 ## 贡献者
 
-感谢所有参与 MathMate 开发的贡献者！
+感谢所有参与 数理锚点 开发的贡献者！
 
 ## 许可证
 
@@ -153,5 +153,5 @@ v2.3.0
 
 ---
 
-**MathMate 团队**  
+**数理锚点 团队**  
 让数学学习更简单！

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/about_mathmate_page.dart';
-import 'package:mathmate/account_settings_page.dart';
-import 'package:mathmate/data/history_repository.dart';
-import 'package:mathmate/grade_selection_page.dart';
-import 'package:mathmate/help_support_page.dart';
-import 'package:mathmate/history_list_page.dart';
-import 'package:mathmate/pages/login_page.dart';
-import 'package:mathmate/responsive/breakpoints.dart';
-import 'package:mathmate/services/auth_service.dart';
-import 'package:mathmate/services/theme_service.dart';
-import 'package:mathmate/services/update_service.dart';
-import 'package:mathmate/services/user_profile_service.dart';
-import 'package:mathmate/tutorial_page.dart';
+import 'package:math_anchor/about_math_anchor_page.dart';
+import 'package:math_anchor/account_settings_page.dart';
+import 'package:math_anchor/data/history_repository.dart';
+import 'package:math_anchor/grade_selection_page.dart';
+import 'package:math_anchor/help_support_page.dart';
+import 'package:math_anchor/history_list_page.dart';
+import 'package:math_anchor/pages/login_page.dart';
+import 'package:math_anchor/responsive/breakpoints.dart';
+import 'package:math_anchor/services/auth_service.dart';
+import 'package:math_anchor/services/theme_service.dart';
+import 'package:math_anchor/services/user_profile_service.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/tutorial_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -154,18 +154,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
-                    icon: Icons.system_update_rounded,
-                    title: '检查更新 (v${UpdateService.currentVersion})',
-                    onTap: () => _checkUpdate(context),
-                  ),
-                  const SizedBox(height: 10),
-                  _MenuCard(
                     icon: Icons.info_outline_rounded,
-                    title: '关于 MathMate',
+                    title: '关于 ${AppSkinConfig.appName}',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const AboutMathMatePage(),
+                          builder: (_) => const AboutMathAnchorPage(),
                         ),
                       );
                     },
@@ -307,31 +301,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
-  }
-
-  Future<void> _checkUpdate(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('正在检查更新...'), duration: Duration(seconds: 1)),
-    );
-    final update = await UpdateService.checkUpdate();
-    if (!mounted) return;
-    if (update == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('已是最新版本'), duration: Duration(seconds: 2)),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('发现新版本'),
-          content: Text('最新版本: ${update.version}\n\n${update.releaseNotes}'),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('稍后')),
-            FilledButton(onPressed: () { Navigator.pop(ctx); UpdateService.downloadAndInstall(update); }, child: const Text('立即更新')),
-          ],
-        ),
-      );
-    }
   }
 
   void _showLogoutDialog(BuildContext context) {

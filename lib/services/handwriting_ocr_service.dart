@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class HandwritingOcrService {
   static const String _ocrModelEnv = 'VOLC_OCR_MODEL_ID';
@@ -24,9 +25,8 @@ class HandwritingOcrService {
     final String modelId = (dotenv.env[_ocrModelEnv] ??
             dotenv.env[_defaultModelEnv] ?? '')
         .trim();
-    final String baseUrl = (dotenv.env['VOLC_BASE_URL'] ??
-            'https://ark.cn-beijing.volces.com/api/v3/chat/completions')
-        .trim();
+    final String baseUrl =
+        (dotenv.env['VOLC_BASE_URL'] ?? AppSkinConfig.volcBaseUrl).trim();
 
     if (apiKey.isEmpty || modelId.isEmpty) {
       return '请配置 VOLC_API_KEY 和 VOLC_MODEL_ID';

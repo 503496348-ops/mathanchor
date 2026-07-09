@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/services/auth_service.dart';
+import 'package:math_anchor/services/auth_service.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 /// 登录/注册页面 —— 支持：
 /// - 账号密码登录
@@ -170,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Image(image: AssetImage('assets/app_icon_final.png'), width: 72, height: 72),
                   ),
                   const SizedBox(height: 8),
-                  Text('MathMate 数学学习助手', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: cs.onSurface)),
+                  Text('${AppSkinConfig.appName} 数学学习助手', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: cs.onSurface)),
                   const SizedBox(height: 24),
                   // 模式切换
                   _buildModeTabs(cs),

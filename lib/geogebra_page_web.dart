@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 /// Web 平台 GeoGebra 页面 —— 使用 iframe 嵌入 GeoGebra 官方在线应用。
 ///
-/// 因为 webview_flutter 不支持 Web 平台，而 MathMate 原本在移动端通过
+/// 因为 webview_flutter 不支持 Web 平台，而 MathAnchor 原本在移动端通过
 /// WebView 加载本地 GeoGebra HTML 文件。此文件提供 Web 端的替代实现：
 /// 通过 dart:html 的 IFrameElement 直接加载 GeoGebra 官网的在线应用。
 class GeogebraPage extends StatefulWidget {
@@ -46,7 +46,7 @@ class _GeogebraPageWebState extends State<GeogebraPage> {
     }
   }
 
-  /// 将 MathMate 的 appName 映射为 GeoGebra 官网 URL。
+  /// 将 MathAnchor 的 appName 映射为 GeoGebra 官网 URL。
   /// 参数 ?embed=true 请求简化嵌入视图（隐藏导航栏等）。
   static String _geoGebraUrl(String appName) {
     switch (appName) {

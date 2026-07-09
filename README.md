@@ -1,21 +1,23 @@
 <div align="center">
 
-  <!-- MathMate Logo with Gradient -->
-  <img src="assets/icon.png" alt="MathMate Logo" width="120" height="120">
+  <!-- 数理锚点 Logo with Gradient -->
+  <img src="assets/icon.png" alt="数理锚点 Logo" width="120" height="120">
 
-  # 🧮 MathMate
+  # 🧮 数理锚点
 
   ### **AI 驱动的智能数学学习应用**
 
   [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)](https://flutter.dev)
   [![Dart](https://img.shields.io/badge/Dart-^3.11.3-blue?logo=dart)](https://dart.dev)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-lightgrey)](https://github.com/mzk-C4/mathmate)
-  [![Version](https://img.shields.io/badge/v2.3.2-purple)](https://github.com/mzk-C4/mathmate/releases)
+  [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-lightgrey)](https://github.com/mzk-C4/mathanchor)
+  [![Version](https://img.shields.io/badge/v2.3.2-purple)](https://github.com/mzk-C4/mathanchor/releases)
 
   **拍照搜题 · 几何可视化 · AI 对话助手 · 数学工具箱**
 
-  [官网](https://mathmate.top) · [技术详解](https://mathmate.top/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [在线体验](https://mathmate.top/app)
+> 本项目的品牌名、服务端点、模型参数等均支持通过 `.env` 与 `lib/config/app_skin_config.dart` 进行可配置换皮。
+
+  [官网示例](https://example.com) · [技术详解](https://example.com/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [在线体验](https://example.com/app)
 
 </div>
 
@@ -28,8 +30,8 @@
 支持手写和印刷题目的智能识别，AI 自动生成详细的分步解析。10 秒内完成「拍照 → 识别 → 解题 → 可视化」全流程，无题库限制。
 
 <p align="center">
-  <img src="https://mathmate.top/images/app-search.jpg" width="260" alt="拍照识别">
-  <img src="https://mathmate.top/images/app-result.jpg" width="260" alt="AI解题">
+  <img src="https://example.com/images/app-search.jpg" width="260" alt="拍照识别">
+  <img src="https://example.com/images/app-result.jpg" width="260" alt="AI解题">
 </p>
 
 ### 🎨 交互式几何可视化
@@ -71,7 +73,7 @@
 <a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/">
   <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 40px 30px; text-align: center; color: white;">
     <div style="font-size: 60px; margin-bottom: 16px;">▶️</div>
-    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">MathMate 产品演示视频</div>
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">数理锚点 产品演示视频</div>
     <div style="font-size: 14px; opacity: 0.9;">AI 拍照搜题 · 几何可视化 · 智能对话 · 数学工具箱</div>
     <div style="margin-top: 16px; display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; font-size: 13px;">
       🕐 时长 3 分钟 · 点击播放
@@ -89,7 +91,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     MathMate 应用层                          │
+│                     数理锚点 应用层                          │
 │  拍照搜题 │ AI 对话助手 │ 数学工具箱 │ 手写笔记 │ 视频推荐  │
 └─────────────────────────────────────────────────────────────┘
                               ↓
@@ -135,8 +137,8 @@
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/mzk-C4/mathmate.git
-cd mathmate
+git clone https://github.com/mzk-C4/mathanchor.git
+cd mathanchor
 
 # 2. 安装依赖
 flutter pub get
@@ -151,18 +153,46 @@ nano .env
 **`.env` 配置示例：**
 
 ```bash
+# 应用元信息
+APP_NAME=数理锚点
+APP_VERSION=2.3.2
+APP_BUILD_NUMBER=2302
+
+# 应用后端
+AUTH_API_BASE_URL=https://your-domain.com/api/auth
+LIBRARY_API_BASE_URL=https://your-domain.com/api/library
+GEOGEBRA_CHAT_URL=https://example.com/api/geogebra/chat
+
 # DeepSeek API
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
-DEEPSEEK_API_URL=https://api.deepseek.com/v1
+DEEPSEEK_API_URL=https://api.deepseek.com
+DEEPSEEK_MODEL_ID=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com/chat/completions
 
 # 火山引擎 API
 VOLC_API_KEY=your-volc-api-key
-VOLC_API_URL=https://ark.cn-beijing.volces.com/api/v3
+VOLC_MODEL_ID=ep-xxxxxxxxxxxxxxxxxxxx
+VOLC_BASE_URL=https://ark.cn-beijing.volces.com/api/v3/chat/completions
 
-# Qwen API
-QWEN_API_KEY=sk-your-qwen-api-key
-QWEN_API_URL=https://dashscope.aliyuncs.com/api/v1
+# 阿里云 Qwen（用于 VivoAiChatService）
+VIVO_API_KEY=your-vivo-api-key
+VIVO_MODEL_ID=qwen-plus
+VIVO_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+
+# 可选：更新检测（返回 version.json）
+APP_UPDATE_VERSION_URL=
+APP_FEATURE_AUTO_UPDATE_CHECK=false
 ```
+
+### 皮肤化改造注意点
+
+本仓库新增 `lib/config/app_skin_config.dart`，所有可定制品牌与域名配置都通过 env 读取。换皮时请优先
+- 修改 `.env` 里的 `APP_NAME / APP_VERSION / ...` 系列变量
+- 不要硬编码产品名到业务代码里
+- 不要把旧域名保留在代码逻辑分支中
+
+- DeepSeek 兼容两套变量：`DEEPSEEK_API_URL`（推荐）与 `DEEPSEEK_BASE_URL`（兼容）
+
 
 ### 运行
 
@@ -200,7 +230,7 @@ lib/
 
 ## 🎯 核心优势
 
-| 维度 | MathMate | 传统搜题 App | 通用大模型 |
+| 维度 | 数理锚点 | 传统搜题 App | 通用大模型 |
 |:-----|:--------:|:------------:|:----------:|
 | **解题方式** | AI 实时推理 | 题库匹配 | 文本推理 |
 | **几何可视化** | ✅ 交互式图形 | ❌ 静态图片 | ❌ 无 |
@@ -213,9 +243,9 @@ lib/
 
 ## 🌐 在线体验
 
-- **官网**: https://mathmate.top
-- **技术详解**: https://mathmate.top/tech.html
-- **Flutter Web**: https://mathmate.top/app
+- **官网**: https://example.com
+- **技术详解**: https://example.com/tech.html
+- **Flutter Web**: https://example.com/app
 
 ---
 
@@ -224,16 +254,16 @@ lib/
 ### 拍照搜题 · 一站式解题流程
 
 <p align="center">
-  <img src="https://mathmate.top/images/app-search.jpg" width="220" alt="拍照识别">
-  <img src="https://mathmate.top/images/app-result.jpg" width="220" alt="AI 求解">
+  <img src="https://example.com/images/app-search.jpg" width="220" alt="拍照识别">
+  <img src="https://example.com/images/app-result.jpg" width="220" alt="AI 求解">
 </p>
 
 ### 核心功能模块
 
 <p align="center">
-  <img src="https://mathmate.top/images/app-chat.jpg" width="220" alt="AI 对话">
-  <img src="https://mathmate.top/images/app-notes.png" width="220" alt="手写笔记">
-  <img src="https://mathmate.top/images/app-tools.jpg" width="220" alt="数学工具箱">
+  <img src="https://example.com/images/app-chat.jpg" width="220" alt="AI 对话">
+  <img src="https://example.com/images/app-notes.png" width="220" alt="手写笔记">
+  <img src="https://example.com/images/app-tools.jpg" width="220" alt="数学工具箱">
 </p>
 
 ---
@@ -305,7 +335,7 @@ lib/
 ## 🌟 Star History
 
 <p align="center">
-  <a href="https://github.com/mzk-C4/mathmate/stargazers">
+  <a href="https://github.com/mzk-C4/mathanchor/stargazers">
     <img src="assets/star_badge.svg" alt="GitHub stars">
   </a>
 </p>
@@ -320,6 +350,6 @@ lib/
 
   Made with ❤️ by AK完全队
 
-  [官网](https://mathmate.top) · [技术文档](https://mathmate.top/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [问题反馈](https://github.com/mzk-C4/mathmate/issues)
+  [官网](https://example.com) · [技术文档](https://example.com/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [问题反馈](https://github.com/mzk-C4/mathanchor/issues)
 
 </div>

@@ -5,8 +5,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:mathmate/services/geogebra_agent_service.dart';
-import 'package:mathmate/visualization/geogebra_mobile_bridge.dart';
+import 'package:math_anchor/services/geogebra_agent_service.dart';
+import 'package:math_anchor/visualization/geogebra_mobile_bridge.dart';
 
 /// 原生 Flutter GeoGebra Chat 页面 —— 移动端专用。
 ///

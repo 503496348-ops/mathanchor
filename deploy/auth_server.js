@@ -1,5 +1,5 @@
 // ============================================================
-// MathMate 认证服务 v3
+// 数理锚点 认证服务 v3
 // 功能: 注册(验证码+邀请码) | 登录 | 邀请码直登 | 用户管理
 // 端口: 3002
 // ============================================================
@@ -9,7 +9,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = '/opt/mathmate';
+const DATA_DIR = '/opt/mathanchor';
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const INVITES_FILE = path.join(DATA_DIR, 'invites.json');
 const SECRET_FILE = path.join(DATA_DIR, 'auth_secret.txt');
@@ -103,7 +103,7 @@ const VERIFY_CODES = {};
 function ensureDefaultInvites() {
   const invites = loadInvites();
   if (invites.length === 0) {
-    invites.push({ code: 'MATHMATE2026', role: 'admin', createdBy: 'system', used: false, usedBy: null, reusable: false, createdAt: new Date().toISOString() });
+    invites.push({ code: 'MATHANCHOR2026', role: 'admin', createdBy: 'system', used: false, usedBy: null, reusable: false, createdAt: new Date().toISOString() });
     invites.push({ code: 'DEVMATE2026', role: 'dev', createdBy: 'system', used: false, usedBy: null, reusable: false, createdAt: new Date().toISOString() });
     invites.push({ code: 'DEVLOGIN', role: 'dev', createdBy: 'system', used: false, usedBy: null, reusable: true, devLogin: true, createdAt: new Date().toISOString() });
     invites.push({ code: 'MATHUSER', role: 'user', createdBy: 'system', used: false, usedBy: null, reusable: true, createdAt: new Date().toISOString() });
@@ -384,4 +384,4 @@ const server = http.createServer((req, res) => {
 });
 
 ensureDefaultInvites();
-server.listen(3002, '127.0.0.1', () => console.log('MathMate Auth v3 running on :3002'));
+server.listen(3002, '127.0.0.1', () => console.log('数理锚点 Auth v3 running on :3002'));

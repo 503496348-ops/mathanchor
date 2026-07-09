@@ -1,4 +1,4 @@
-import 'package:mathmate/agents/models/agent_models.dart';
+import 'package:math_anchor/agents/models/agent_models.dart';
 
 /// 智能体统一接口 —— 对标赛题「多智能体协同架构设计」
 ///

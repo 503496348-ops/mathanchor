@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:mathmate/agents/base_agent.dart';
-import 'package:mathmate/agents/models/agent_models.dart';
+import 'package:math_anchor/agents/base_agent.dart';
+import 'package:math_anchor/agents/models/agent_models.dart';
 
 /// 智能体调度中枢 —— 对标赛题要求②「多智能体协同架构」
 ///

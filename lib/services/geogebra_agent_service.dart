@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:math_anchor/config/app_skin_config.dart';
 import 'prompts/geogebra_agent_prompt.dart';
 
 /// Agent 流式响应块
@@ -131,13 +132,18 @@ class GeogebraAgentService {
     String apiKeyEnv = 'DEEPSEEK_API_KEY',
     String modelEnv = 'DEEPSEEK_MODEL_ID',
     String baseUrlEnv = 'DEEPSEEK_BASE_URL',
-    String defaultBaseUrl = 'https://api.deepseek.com/chat/completions',
-    String defaultModel = 'deepseek-chat',
+    String? defaultBaseUrl,
+    String? defaultModel,
   })  : _apiKeyEnv = apiKeyEnv,
         _modelEnv = modelEnv,
         _baseUrlEnv = baseUrlEnv,
-        _defaultBaseUrl = defaultBaseUrl,
-        _defaultModel = defaultModel;
+        _defaultBaseUrl = (defaultBaseUrl == null || defaultBaseUrl.trim().isEmpty)
+            ? AppSkinConfig.deepseekBaseUrl
+            : defaultBaseUrl,
+        _defaultModel =
+            (defaultModel == null || defaultModel.trim().isEmpty)
+                ? AppSkinConfig.deepseekModelId
+                : defaultModel;
 
   static bool _dotenvLoaded = false;
   http.Client? _client;
@@ -171,7 +177,11 @@ class GeogebraAgentService {
 
     final apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
     final model = (dotenv.env[_modelEnv] ?? _defaultModel).trim();
-    final baseUrl = (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+    final baseUrl =
+        (dotenv.env[_baseUrlEnv] ??
+                dotenv.env['DEEPSEEK_API_URL'] ??
+                _defaultBaseUrl)
+            .trim();
 
     if (apiKey.isEmpty) {
       yield AgentStreamChunk(error: '缺少 API Key: $_apiKeyEnv');

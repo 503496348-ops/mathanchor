@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mathmate/chat_page.dart';
-import 'package:mathmate/data/hive_conversation_models.dart';
-import 'package:mathmate/data/conversation_repository.dart';
-import 'package:mathmate/responsive/breakpoints.dart';
-import 'package:mathmate/services/model_service.dart';
+import 'package:math_anchor/chat_page.dart';
+import 'package:math_anchor/data/hive_conversation_models.dart';
+import 'package:math_anchor/data/conversation_repository.dart';
+import 'package:math_anchor/responsive/breakpoints.dart';
+import 'package:math_anchor/services/model_service.dart';
 
 class ChatHomePage extends StatefulWidget {
   final String? initialQuery;

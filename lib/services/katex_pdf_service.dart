@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,7 +16,7 @@ class KatexPdfService {
   Future<KatexPdfResult> exportToPdf({
     required String title,
     required String content,
-    String subtitle = '由 MathMate 生成',
+    String subtitle = '由 ${AppSkinConfig.appName} 生成',
   }) async {
     try {
       await _ensureKatexLoaded();
@@ -43,7 +44,7 @@ class KatexPdfService {
   Future<String> _saveHtmlFile(String title, String htmlContent) async {
     final Directory docDir = await getApplicationDocumentsDirectory();
     final String safeName = title.replaceAll(RegExp(r'[^\w一-鿿\- ]'), '').trim();
-    final String fileName = safeName.isNotEmpty ? '$safeName.html' : 'mathmate_export.html';
+    final String fileName = safeName.isNotEmpty ? '$safeName.html' : '${AppSkinConfig.exportFileBaseName}_export.html';
     final File file = File('${docDir.path}/$fileName');
     await file.writeAsString(htmlContent);
     return file.path;
@@ -54,7 +55,7 @@ class KatexPdfService {
     await OpenFile.open(filePath, type: 'text/html');
     await Share.shareXFiles(
       <XFile>[XFile(filePath, mimeType: 'text/html')],
-      subject: 'MathMate 数学解答',
+      subject: '${AppSkinConfig.appName} 数学解答',
     );
   }
 

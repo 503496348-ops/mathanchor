@@ -1,9 +1,9 @@
-# MathMate 仓库对比报告
+# 数理锚点 仓库对比报告
 
 ## 📊 对比概述
 
-**远程仓库**: `https://github.com/Zxcbf109/mathmate.git`
-**本地仓库**: `D:\projects\MathMate`
+**远程仓库**: `https://github.com/Zxcbf109/mathanchor.git`
+**本地仓库**: `D:\projects\数理锚点`
 
 ---
 

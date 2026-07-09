@@ -3,13 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class MathRecognizer {
   static const _apiKeyEnv = 'VOLC_API_KEY';
   static const _modelIdEnv = 'VOLC_MODEL_ID';
   static const _baseUrlEnv = 'VOLC_BASE_URL';
-  static const _defaultBaseUrl =
-      'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
 
   static bool _dotenvLoaded = false;
 
@@ -25,7 +24,7 @@ class MathRecognizer {
 
       final apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
       final modelId = (dotenv.env[_modelIdEnv] ?? '').trim();
-      final baseUrl = (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+      final baseUrl = (dotenv.env[_baseUrlEnv] ?? AppSkinConfig.volcBaseUrl).trim();
 
       if (apiKey.isEmpty || modelId.isEmpty) {
         return 'Missing env config: VOLC_API_KEY / VOLC_MODEL_ID';

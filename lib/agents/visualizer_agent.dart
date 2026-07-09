@@ -1,7 +1,7 @@
-import 'package:mathmate/agents/base_agent.dart';
-import 'package:mathmate/agents/models/agent_models.dart';
-import 'package:mathmate/fusion/ai_drawing/services/ai_drawing_service.dart';
-import 'package:mathmate/fusion/models/ai_models.dart';
+import 'package:math_anchor/agents/base_agent.dart';
+import 'package:math_anchor/agents/models/agent_models.dart';
+import 'package:math_anchor/fusion/ai_drawing/services/ai_drawing_service.dart';
+import 'package:math_anchor/fusion/models/ai_models.dart';
 
 /// 可视化智能体 —— 包装现有 [AIDrawingService]
 ///

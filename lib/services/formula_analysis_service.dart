@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class FormulaAnalysisResult {
   final String explanation;
@@ -20,9 +21,11 @@ class FormulaAnalysisService {
     await dotenv.load(fileName: '.env');
     _apiKey = (dotenv.env['VOLC_API_KEY'] ?? '').trim();
     _modelId = (dotenv.env['VOLC_MODEL_ID'] ?? '').trim();
-    _baseUrl = (dotenv.env['VOLC_BASE_URL'] ??
-            'https://ark.cn-beijing.volces.com/api/v3/chat/completions')
-        .trim();
+    _baseUrl =
+        (dotenv.env['VOLC_BASE_URL'] ?? AppSkinConfig.volcBaseUrl).trim();
+    if (_baseUrl!.isEmpty) {
+      _baseUrl = AppSkinConfig.volcBaseUrl;
+    }
     _initialized = true;
   }
 

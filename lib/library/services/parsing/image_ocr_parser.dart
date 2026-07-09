@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/library/prompts/classification_prompt.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/volc_ai_client_service.dart';
+import 'package:math_anchor/library/prompts/classification_prompt.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/volc_ai_client_service.dart';
 
 /// 板书 / 图片 内容提取 —— 走火山 Vision API
 ///

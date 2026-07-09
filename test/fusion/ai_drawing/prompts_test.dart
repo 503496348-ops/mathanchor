@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mathmate/fusion/ai_drawing/prompts/math_prompts.dart';
-import 'package:mathmate/fusion/models/ai_models.dart';
+import 'package:math_anchor/fusion/ai_drawing/prompts/math_prompts.dart';
+import 'package:math_anchor/fusion/models/ai_models.dart';
 
 void main() {
   group('MathDrawingPrompts Tests', () {

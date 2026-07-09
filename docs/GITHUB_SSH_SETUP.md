@@ -27,7 +27,7 @@ Hi mzk-C4! You've successfully authenticated, but GitHub does not provide shell 
 
 | 仓库 | SSH URL |
 |------|---------|
-| MathMate | `git@github.com:mzk-C4/mathmate.git` |
+| 数理锚点 | `git@github.com:mzk-C4/mathanchor.git` |
 | Auto-Generate-Changelog-with-LLM | `git@github.com:Qiyao-sudo/Auto-Generate-Changelog-with-LLM.git` |
 
 ## 🔧 切换现有仓库为 SSH 协议
@@ -39,7 +39,7 @@ Hi mzk-C4! You've successfully authenticated, but GitHub does not provide shell 
 git remote -v
 
 # 切换为 SSH
-git remote set-url origin git@github.com:mzk-C4/mathmate.git
+git remote set-url origin git@github.com:mzk-C4/mathanchor.git
 
 # 验证
 git remote -v
@@ -49,7 +49,7 @@ git remote -v
 
 1. **使用 SSH 而非 HTTPS**：本机已配置好 SSH key，所有 git 操作都走 SSH 协议
 2. **无需登录**：SSH 认证已配置好，可直接 `git push` / `git pull`
-3. **多仓库用户**：当前 GitHub 用户是 `mzk-C4`（MathMate）和 `Qiyao-sudo`（Auto-Generate-Changelog）
+3. **多仓库用户**：当前 GitHub 用户是 `mzk-C4`（数理锚点）和 `Qiyao-sudo`（Auto-Generate-Changelog）
 4. **如果遇到权限问题**：检查 `~/.ssh/config` 是否正确指向 `id_ed25519`
 
 ## 📝 SSH Config 推荐配置（其他 Agent 可参考）

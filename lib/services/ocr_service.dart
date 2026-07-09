@@ -1,8 +1,8 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/models/pipeline_models.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/prompts/ocr_prompt.dart';
-import 'package:mathmate/services/volc_ai_client_service.dart';
+import 'package:math_anchor/models/pipeline_models.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/prompts/ocr_prompt.dart';
+import 'package:math_anchor/services/volc_ai_client_service.dart';
 
 class OcrService {
   static const String _ocrModelEnv = 'VOLC_OCR_MODEL_ID';

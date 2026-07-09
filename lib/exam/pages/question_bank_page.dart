@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:mathmate/exam/models/question.dart';
-import 'package:mathmate/exam/services/question_api.dart';
+import 'package:math_anchor/exam/models/question.dart';
+import 'package:math_anchor/exam/services/question_api.dart';
 
 /// 题库浏览页（参考实现，给队员开发考试功能做接入样板）
 ///
-/// 接云端 https://mathmate.top/api/library/：
+/// 接配置化云端题库端点（`LIBRARY_API_BASE_URL`）：
 /// 板块筛选 + 难度筛选 + 关键词 → 列表 → 点题看详情（题干/选项/答案/解析）。
 class QuestionBankPage extends StatefulWidget {
   const QuestionBankPage({super.key});

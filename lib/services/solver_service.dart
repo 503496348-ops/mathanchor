@@ -1,6 +1,6 @@
-import 'package:mathmate/models/pipeline_models.dart';
-import 'package:mathmate/services/deepseek_service.dart';
-import 'package:mathmate/services/prompts/solve_prompt.dart';
+import 'package:math_anchor/models/pipeline_models.dart';
+import 'package:math_anchor/services/deepseek_service.dart';
+import 'package:math_anchor/services/prompts/solve_prompt.dart';
 
 class SolverService {
   final DeepSeekService _client;

@@ -5,9 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:mathmate/fusion/ai_drawing/prompts/math_prompts.dart';
-import 'package:mathmate/fusion/models/ai_models.dart';
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/fusion/ai_drawing/prompts/math_prompts.dart';
+import 'package:math_anchor/fusion/models/ai_models.dart';
+import 'package:math_anchor/services/app_logger.dart';
 
 /// AI 绘图服务
 ///
@@ -17,8 +18,6 @@ class AIDrawingService {
   static const String _apiKeyEnv = 'DEEPSEEK_API_KEY';
   static const String _modelIdEnv = 'DEEPSEEK_MODEL_ID';
   static const String _baseUrlEnv = 'DEEPSEEK_BASE_URL';
-  static const String _defaultBaseUrl =
-      'https://api.deepseek.com/chat/completions';
   static const String _defaultModel = 'deepseek-v4-flash';
 
   static bool _dotenvLoaded = false;
@@ -187,9 +186,10 @@ class AIDrawingService {
 
     final String apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
     final String modelId = (dotenv.env[_modelIdEnv] ?? _defaultModel).trim();
-    final String baseUrl =
-        (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
-
+    final String baseUrl = (dotenv.env[_baseUrlEnv] ??
+            dotenv.env['DEEPSEEK_API_URL'] ??
+            AppSkinConfig.deepseekBaseUrl)
+        .trim();
     AppLogger.instance.info('[AIDrawing] 请求模型: $modelId');
     AppLogger.instance.info('[AIDrawing] 请求端点: $baseUrl');
 

@@ -1,12 +1,12 @@
-# MathMate 仓库对比计划
+# 数理锚点 仓库对比计划
 
 ## 任务目标
-对比 `https://github.com/Zxcbf109/mathmate.git` 与本地 MathMate 项目的差异，分析更新内容。
+对比 `https://github.com/Zxcbf109/mathanchor.git` 与本地 数理锚点 项目的差异，分析更新内容。
 
 ## 执行步骤
 
 ### 1. 获取远程仓库
-- 克隆 `https://github.com/Zxcbf109/mathmate.git` 到本地临时目录
+- 克隆 `https://github.com/Zxcbf109/mathanchor.git` 到本地临时目录
 
 ### 2. 文件结构对比
 - 对比两个仓库的目录结构

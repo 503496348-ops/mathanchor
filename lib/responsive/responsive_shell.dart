@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/responsive/breakpoints.dart';
+import 'package:math_anchor/responsive/breakpoints.dart';
 
 /// 单个导航 Tab 的描述（图标 + 文案）。
 ///

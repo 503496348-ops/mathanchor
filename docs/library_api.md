@@ -1,9 +1,9 @@
-# MathMate 题库 API（已上线）
+# 数理锚点 题库 API（已上线）
 
-> Base URL: `https://mathmate.top/api/library`
-> 服务：PM2 `mathmate-library`（:3004），Nginx 反代 `/api/library/`
-> 存储：JSON 文件（`/opt/mathmate/library_questions.json`），零依赖；后期可迁 SQLite/MySQL
-> 代码：服务器 `/opt/mathmate/library_server.js` ＝ 本地 `deploy/library_server.js`
+> Base URL: `https://your-domain.com/api/library`
+> 服务：PM2 `mathanchor-library`（:3004），Nginx 反代 `/api/library/`
+> 存储：JSON 文件（`/opt/mathanchor/library_questions.json`），零依赖；后期可迁 SQLite/MySQL
+> 代码：服务器 `/opt/mathanchor/library_server.js` ＝ 本地 `deploy/library_server.js`
 > 部署脚本：`deploy/deploy_library.sh`（带 Nginx 备份+测试+回滚）
 
 ## 端点
@@ -45,18 +45,18 @@
 
 ```bash
 # 列表（函数与导数，中等难度）
-curl -s "https://mathmate.top/api/library/questions?section=函数与导数&dmin=0.4&dmax=0.6"
+curl -s "https://your-domain.com/api/library/questions?section=函数与导数&dmin=0.4&dmax=0.6"
 
 # 统计
-curl -s https://mathmate.top/api/library/stats
+curl -s https://your-domain.com/api/library/stats
 
 # 批量导入（灌切题脚本产出的 questions_*.json）
-curl -s -X POST https://mathmate.top/api/library/questions/batch \
+curl -s -X POST https://your-domain.com/api/library/questions/batch \
   -H "Content-Type: application/json" \
   -d @questions_2024.json
 
 # 新增单题
-curl -s -X POST https://mathmate.top/api/library/questions \
+curl -s -X POST https://your-domain.com/api/library/questions \
   -H "Content-Type: application/json" \
   -d '{"subject":"数学","section":"数列","type":"解答题","content":"...","difficulty":0.6,"knowledgePoints":["等差数列"],"answer":"...","solution":"..."}'
 ```
@@ -74,4 +74,4 @@ curl -s -X POST https://mathmate.top/api/library/questions \
 
 ## 备注
 - 暂未加认证（内部开发用）。上生产前接 `auth_server`(:3002) 的 token。
-- Nginx 配置备份：`/etc/nginx/sites-enabled/mathmate.bak.library_*`
+- Nginx 配置备份：`/etc/nginx/sites-enabled/mathanchor.bak.library_*`

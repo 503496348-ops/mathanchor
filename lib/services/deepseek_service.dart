@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class DeepSeekService {
   static const String _apiKeyEnv = 'DEEPSEEK_API_KEY';
-  static const String _modelIdEnv = 'DEEPSEEK_MODEL_ID';
-  static const String _baseUrlEnv = 'DEEPSEEK_BASE_URL';
-  static const String _defaultBaseUrl = 'https://api.deepseek.com/chat/completions';
 
   static bool _dotenvLoaded = false;
 
@@ -25,8 +23,11 @@ class DeepSeekService {
     await _ensureEnvLoaded();
 
     final String apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
-    final String modelId = (dotenv.env[_modelIdEnv] ?? '').trim();
-    final String baseUrl = (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+    final String modelId = (dotenv.env['DEEPSEEK_MODEL_ID']?.trim().isNotEmpty == true
+            ? dotenv.env['DEEPSEEK_MODEL_ID']
+            : null) ??
+        AppSkinConfig.deepseekModelId;
+    final String baseUrl = AppSkinConfig.deepseekBaseUrl;
 
     AppLogger.instance.info('[DeepSeek] 请求模型: $modelId');
     AppLogger.instance.info('[DeepSeek] 请求端点: $baseUrl');
@@ -69,13 +70,20 @@ class DeepSeekService {
     sw.stop();
     AppLogger.instance.info('[DeepSeek] 响应状态: ${response.statusCode}，耗时 ${sw.elapsedMilliseconds}ms');
 
+    final String body = utf8.decode(response.bodyBytes);
     if (response.statusCode != 200) {
-      final String detail = utf8.decode(response.bodyBytes);
-      AppLogger.instance.error('[DeepSeek] API 错误响应体: $detail');
-      throw Exception('DeepSeek API error: $detail');
+      AppLogger.instance.error('[DeepSeek] API 错误响应体: $body');
+      throw Exception('DeepSeek API error: $body');
     }
 
-    final dynamic data = jsonDecode(utf8.decode(response.bodyBytes));
+    dynamic data;
+    try {
+      data = jsonDecode(body);
+    } catch (e) {
+      AppLogger.instance.error('[DeepSeek] 响应不是合法 JSON: $e');
+      throw Exception('DeepSeek API 返回非 JSON: ${e.toString()}');
+    }
+
     final String parsed = _extractContentFromResponse(data).trim();
     AppLogger.instance.info('[DeepSeek] 提取内容长度: ${parsed.length} 字符');
     if (parsed.length <= 500) {
@@ -85,7 +93,7 @@ class DeepSeekService {
     }
 
     if (parsed.isEmpty) {
-      AppLogger.instance.warn('[DeepSeek] 返回空内容！原始响应: ${utf8.decode(response.bodyBytes)}');
+      AppLogger.instance.warn('[DeepSeek] 返回空内容！原始响应: $body');
       throw Exception('DeepSeek API returned empty content.');
     }
     return parsed;

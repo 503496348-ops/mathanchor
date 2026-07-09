@@ -10,37 +10,37 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mathmate/beautiful_result_page.dart';
-import 'package:mathmate/pages/chat_home_page.dart';
-import 'package:mathmate/notes_page.dart';
-import 'package:mathmate/geogebra_page.dart';
-import 'package:mathmate/data/conversation_repository.dart';
-import 'package:mathmate/data/hive_models.dart';
-import 'package:mathmate/data/history_repository.dart';
-import 'package:mathmate/data/video_resources.dart';
-import 'package:mathmate/grade_selection_page.dart';
-import 'package:mathmate/history_list_page.dart';
-import 'package:mathmate/pages/video_player_page.dart';
-import 'package:mathmate/profile_page.dart';
-import 'package:mathmate/scanner/enhanced_crop_page.dart';
-import 'package:mathmate/services/scanner_service.dart';
-import 'package:mathmate/services/theme_service.dart';
+import 'package:math_anchor/beautiful_result_page.dart';
+import 'package:math_anchor/pages/chat_home_page.dart';
+import 'package:math_anchor/notes_page.dart';
+import 'package:math_anchor/geogebra_page.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/data/conversation_repository.dart';
+import 'package:math_anchor/data/hive_models.dart';
+import 'package:math_anchor/data/history_repository.dart';
+import 'package:math_anchor/data/video_resources.dart';
+import 'package:math_anchor/grade_selection_page.dart';
+import 'package:math_anchor/history_list_page.dart';
+import 'package:math_anchor/pages/video_player_page.dart';
+import 'package:math_anchor/profile_page.dart';
+import 'package:math_anchor/scanner/enhanced_crop_page.dart';
+import 'package:math_anchor/services/scanner_service.dart';
+import 'package:math_anchor/services/theme_service.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mathmate/services/video_recommendation_service.dart';
-import 'package:mathmate/theme/app_theme.dart';
-import 'package:mathmate/responsive/responsive_shell.dart';
-import 'package:mathmate/tutorial_page.dart';
-import 'package:mathmate/services/update_service.dart';
-import 'package:mathmate/pages/ai_drawing_page.dart';
-import 'package:mathmate/pages/geogebra_chat_entry.dart';
-import 'package:mathmate/agents/orchestrator.dart';
-import 'package:mathmate/agents/visualizer_agent.dart';
-import 'package:mathmate/learner/models/learner_profile.dart';
-import 'package:mathmate/learner/services/profile_repository.dart';
-import 'package:mathmate/learner/widgets/profile_setup_dialog.dart';
-import 'package:mathmate/library/presentation/library_page.dart';
-import 'package:mathmate/library/services/material_repository.dart';
-import 'package:mathmate/exam/pages/question_bank_page.dart';
+import 'package:math_anchor/services/video_recommendation_service.dart';
+import 'package:math_anchor/theme/app_theme.dart';
+import 'package:math_anchor/responsive/responsive_shell.dart';
+import 'package:math_anchor/tutorial_page.dart';
+import 'package:math_anchor/pages/ai_drawing_page.dart';
+import 'package:math_anchor/pages/geogebra_chat_entry.dart';
+import 'package:math_anchor/agents/orchestrator.dart';
+import 'package:math_anchor/agents/visualizer_agent.dart';
+import 'package:math_anchor/learner/models/learner_profile.dart';
+import 'package:math_anchor/learner/services/profile_repository.dart';
+import 'package:math_anchor/learner/widgets/profile_setup_dialog.dart';
+import 'package:math_anchor/library/presentation/library_page.dart';
+import 'package:math_anchor/library/services/material_repository.dart';
+import 'package:math_anchor/exam/pages/question_bank_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,23 +85,23 @@ Future<void> main() async {
   }
   // Web 端跳过教程（避免选完年级又卡教程页）
   final bool tutorialCompleted = kIsWeb ? true : await HistoryRepository.instance.isTutorialCompleted();
-  runApp(MathMateApp(
+  runApp(MathAnchorApp(
     checkFirstLaunch: isFirst,
     showTutorial: !tutorialCompleted && !isFirst,
   ));
 }
 
-class MathMateApp extends StatefulWidget {
+class MathAnchorApp extends StatefulWidget {
   final bool checkFirstLaunch;
   final bool showTutorial;
 
-  const MathMateApp({super.key, required this.checkFirstLaunch, this.showTutorial = false});
+  const MathAnchorApp({super.key, required this.checkFirstLaunch, this.showTutorial = false});
 
   @override
-  State<MathMateApp> createState() => _MathMateAppState();
+  State<MathAnchorApp> createState() => _MathAnchorAppState();
 }
 
-class _MathMateAppState extends State<MathMateApp> {
+class _MathAnchorAppState extends State<MathAnchorApp> {
   late ThemeService _themeService;
 
   @override
@@ -109,33 +109,6 @@ class _MathMateAppState extends State<MathMateApp> {
     super.initState();
     _themeService = ThemeService.instance;
     _themeService.addListener(_onThemeChanged);
-    // 启动 3 秒后静默检查更新
-    Future.delayed(const Duration(seconds: 3), _checkAutoUpdate);
-  }
-
-  Future<void> _checkAutoUpdate() async {
-    final update = await UpdateService.checkUpdate();
-    if (!mounted || update == null) return;
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('发现新版本'),
-        content: Text('最新版本: ${update.version}\n\n${update.releaseNotes}'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('稍后')),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final msg = await UpdateService.downloadAndInstall(update);
-              if (msg != null && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-              }
-            },
-            child: const Text('立即更新'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -163,6 +136,7 @@ class _MathMateAppState extends State<MathMateApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: AppSkinConfig.appName,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -243,7 +217,9 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadGradeLevelAndVideos();
+    if (AppSkinConfig.featureVideoRecommendation) {
+      _loadGradeLevelAndVideos();
+    }
   }
 
   @override
@@ -411,27 +387,29 @@ class _QuestionHomePageState extends State<QuestionHomePage> {
                     _buildCameraHero(),
                     const SizedBox(height: 16),
                     _buildGeoChatCard(),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text(
-                          '数学视频推荐',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                    if (AppSkinConfig.featureVideoRecommendation) ...[
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Text(
+                            '数学视频推荐',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                        if (_isRefreshing)
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    _buildVideoList(),
+                          if (_isRefreshing)
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      _buildVideoList(),
+                    ],
                     const SizedBox(height: 16),
                     _buildToolboxCard(),
                   ],

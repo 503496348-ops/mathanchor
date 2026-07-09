@@ -677,4 +677,4 @@ func MigrateLegacyConfig(cfg *LegacyConfig) (*ccbox.Config, error) {
 
 ### 项目文档
 - [CC-Box README](file:///D:/projects/add/cc-box/README.md)
-- [CC-Box 集成方案](file:///D:/projects/MathMate/docs/cc-box_integration_plan.md)
+- [CC-Box 集成方案](file:///D:/projects/数理锚点/docs/cc-box_integration_plan.md)

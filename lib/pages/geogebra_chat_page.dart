@@ -3,8 +3,8 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:mathmate/services/geogebra_agent_service.dart';
-import 'package:mathmate/visualization/geogebra_web_renderer.dart';
+import 'package:math_anchor/services/geogebra_agent_service.dart';
+import 'package:math_anchor/visualization/geogebra_web_renderer.dart';
 
 /// GeoGebra Agent 聊天页面 —— Web 端专用。
 ///

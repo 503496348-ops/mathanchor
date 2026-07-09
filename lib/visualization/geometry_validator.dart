@@ -1,5 +1,5 @@
-import 'package:mathmate/visualization/models.dart';
-import 'package:mathmate/visualization/safe_json_parser.dart';
+import 'package:math_anchor/visualization/models.dart';
+import 'package:math_anchor/visualization/safe_json_parser.dart';
 
 class GeometryValidationResult {
   final bool isValid;

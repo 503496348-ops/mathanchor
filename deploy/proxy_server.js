@@ -3,7 +3,7 @@ const https = require('https');
 const fs = require('fs');
 
 // ============================================================
-// MathMate API 代理服务
+// 数理锚点 API 代理服务
 // 用途：接收 Flutter Web 前端的 API 请求，转发到 DeepSeek/Vivo/Volc
 // 好处：API Key 只存在服务器，前端 JS 中不会泄露
 //
@@ -130,13 +130,13 @@ const server = http.createServer((req, res) => {
       proxyRequest(req, res, body);
     } else {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('MathMate Proxy OK');
+      res.end('数理锚点 Proxy OK');
     }
   });
 });
 
 server.listen(3001, '127.0.0.1', () => {
-  console.log('MathMate API Proxy running on http://127.0.0.1:3001');
+  console.log('数理锚点 API Proxy running on http://127.0.0.1:3001');
   console.log('Routes:');
   for (const path of Object.keys(ROUTES)) {
     console.log(`  POST ${path}`);

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:mathmate/library/models/study_material.dart';
-import 'package:mathmate/library/prompts/classification_prompt.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/deepseek_service.dart';
+import 'package:math_anchor/library/models/study_material.dart';
+import 'package:math_anchor/library/prompts/classification_prompt.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/deepseek_service.dart';
 
 /// 资料自动分类服务 —— 复刻 ProfileBuilderService 的 DeepSeek + JSON 范式
 ///

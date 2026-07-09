@@ -1,11 +1,11 @@
 {
-  "name": "mathmate-proxy",
+  "name": "mathanchor-proxy",
   "version": "1.0.0",
-  "description": "MathMate API Proxy - 转发 API 请求到 DeepSeek/Vivo/Volc",
+  "description": "数理锚点 API Proxy - 转发 API 请求到 DeepSeek/Vivo/Volc",
   "main": "proxy_server.js",
   "scripts": {
     "start": "node proxy_server.js",
-    "daemon": "pm2 start proxy_server.js --name mathmate-proxy"
+    "daemon": "pm2 start proxy_server.js --name mathanchor-proxy"
   },
   "engines": {
     "node": ">=18.0.0"

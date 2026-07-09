@@ -3,18 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/data/hive_models.dart';
-import 'package:mathmate/data/history_repository.dart';
-import 'package:mathmate/models/pipeline_models.dart';
-import 'package:mathmate/models/pipeline_stage.dart';
-import 'package:mathmate/responsive/breakpoints.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/math_pipeline_service.dart';
-import 'package:mathmate/visualization/geometry_validator.dart';
-import 'package:mathmate/visualization/geometry_painter.dart';
-import 'package:mathmate/visualization/safe_json_parser.dart';
-import 'package:mathmate/visualization_page.dart';
-import 'package:mathmate/services/katex_pdf_service.dart';
+import 'package:math_anchor/data/hive_models.dart';
+import 'package:math_anchor/data/history_repository.dart';
+import 'package:math_anchor/models/pipeline_models.dart';
+import 'package:math_anchor/models/pipeline_stage.dart';
+import 'package:math_anchor/responsive/breakpoints.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/math_pipeline_service.dart';
+import 'package:math_anchor/visualization/geometry_validator.dart';
+import 'package:math_anchor/visualization/geometry_painter.dart';
+import 'package:math_anchor/visualization/safe_json_parser.dart';
+import 'package:math_anchor/visualization_page.dart';
+import 'package:math_anchor/services/katex_pdf_service.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class BeautifulResultPage extends StatefulWidget {
   final XFile image;
@@ -359,7 +360,7 @@ class _BeautifulResultPageState extends State<BeautifulResultPage> {
 
     final KatexPdfService pdfService = KatexPdfService();
     final KatexPdfResult result = await pdfService.exportToPdf(
-      title: 'MathMate 识别结果',
+      title: '${AppSkinConfig.appName} 识别结果',
       content: content.toString(),
     );
 

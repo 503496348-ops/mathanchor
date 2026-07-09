@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:mathmate/models/pipeline_models.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/deepseek_service.dart';
-import 'package:mathmate/services/prompts/visualization_prompt.dart';
-import 'package:mathmate/visualization/geometry_validator.dart';
-import 'package:mathmate/visualization/response_extractor.dart';
+import 'package:math_anchor/models/pipeline_models.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/deepseek_service.dart';
+import 'package:math_anchor/services/prompts/visualization_prompt.dart';
+import 'package:math_anchor/visualization/geometry_validator.dart';
+import 'package:math_anchor/visualization/response_extractor.dart';
 
 class VisualizationService {
   final DeepSeekService _client;

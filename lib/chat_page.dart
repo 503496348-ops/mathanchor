@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:mathmate/data/hive_conversation_models.dart';
-import 'package:mathmate/data/conversation_repository.dart';
-import 'package:mathmate/services/katex_pdf_service.dart';
-import 'package:mathmate/services/model_service.dart';
-import 'package:mathmate/services/vivo_chat_service.dart';
+import 'package:math_anchor/data/hive_conversation_models.dart';
+import 'package:math_anchor/data/conversation_repository.dart';
+import 'package:math_anchor/services/katex_pdf_service.dart';
+import 'package:math_anchor/services/model_service.dart';
+import 'package:math_anchor/services/vivo_chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   final int? conversationId;

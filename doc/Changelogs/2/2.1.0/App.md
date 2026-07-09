@@ -2,7 +2,7 @@
 ## [v2.1.0] - 2026-05-05
 
 ### ✨ 新增功能
-- 🔌 新增 MathMateApiService 外部 API 服务集成
+- 🔌 新增 数理锚点ApiService 外部 API 服务集成
 - 📱 新增设备 ID 初始化功能，支持 Android/iOS 设备识别
 - 📦 新增 device_info_plus 依赖
 

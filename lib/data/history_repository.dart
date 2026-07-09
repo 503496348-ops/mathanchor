@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mathmate/data/hive_models.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/data/hive_models.dart';
 
 const String _kIsFirstLaunch = 'is_first_launch';
 const String _kGradeLevel = 'grade_level';
@@ -107,18 +108,16 @@ class HistoryRepository {
     const String apiKeyEnv = 'VIVO_API_KEY';
     const String modelEnv = 'VIVO_MODEL_ID';
     const String baseUrlEnv = 'VIVO_BASE_URL';
-    const String defaultModel = 'qwen-plus';
-    const String defaultBaseUrl =
-        'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 
     try {
       await dotenv.load(fileName: '.env');
       final String apiKey = (dotenv.env[apiKeyEnv] ?? '').trim();
       if (apiKey.isEmpty) return '数学问题';
 
-      final String modelId = (dotenv.env[modelEnv] ?? defaultModel).trim();
+      final String modelId =
+          (dotenv.env[modelEnv] ?? AppSkinConfig.vivoModelId).trim();
       final String baseUrl =
-          (dotenv.env[baseUrlEnv] ?? defaultBaseUrl).trim();
+          (dotenv.env[baseUrlEnv] ?? AppSkinConfig.vivoBaseUrl).trim();
 
       const String prompt = '请根据以下数学题目内容，总结一个简洁的标题（不超过20个字），概括这道题目的知识点或题型。\n\n题目内容：\n';
 

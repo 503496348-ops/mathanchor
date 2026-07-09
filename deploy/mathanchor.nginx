@@ -1,15 +1,15 @@
 # ============================================================
-# MathMate Nginx 配置
-# Ubuntu 路径: /etc/nginx/sites-available/mathmate.top
-# 启用: sudo ln -s /etc/nginx/sites-available/mathmate.top /etc/nginx/sites-enabled/
+# 数理锚点 Nginx 配置
+# Ubuntu 路径: /etc/nginx/sites-available/your-domain.com
+# 启用: sudo ln -s /etc/nginx/sites-available/your-domain.com /etc/nginx/sites-enabled/
 # ============================================================
 
 server {
     listen 80;
-    server_name mathmate.top www.mathmate.top;
+    server_name your-domain.com www.your-domain.com;
 
     # Flutter Web 静态文件
-    root /var/www/mathmate;
+    root /var/www/mathanchor;
     index index.html;
 
     # ========== API 代理 ==========

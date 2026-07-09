@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:math_anchor/config/app_skin_config.dart';
 
 class VivoChatMessage {
   final String role;
@@ -11,9 +12,9 @@ class VivoChatMessage {
   VivoChatMessage({required this.role, required this.content});
 
   Map<String, String> toMap() => <String, String>{
-    'role': role,
-    'content': content,
-  };
+        'role': role,
+        'content': content,
+      };
 }
 
 class VivoChatResponse {
@@ -26,11 +27,6 @@ class VivoChatResponse {
 class VivoAiChatService {
   static const String _apiKeyEnv = 'VIVO_API_KEY';
   static const String _modelEnv = 'VIVO_MODEL_ID';
-  static const String _baseUrlEnv = 'VIVO_BASE_URL';
-  static const String _defaultModel = 'qwen-plus';
-  static const String _defaultBaseUrl =
-      'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
-
   static bool _dotenvLoaded = false;
 
   Future<void> _ensureEnvLoaded() async {
@@ -43,9 +39,9 @@ class VivoAiChatService {
     await _ensureEnvLoaded();
 
     final String apiKey = (dotenv.env[_apiKeyEnv] ?? '').trim();
-    final String resolvedModel = modelId ?? (dotenv.env[_modelEnv] ?? _defaultModel).trim();
-    final String baseUrl =
-        (dotenv.env[_baseUrlEnv] ?? _defaultBaseUrl).trim();
+    final String resolvedModel =
+        (modelId != null && modelId.trim().isNotEmpty ? modelId : dotenv.env[_modelEnv])?.trim() ?? AppSkinConfig.vivoModelId;
+    final String baseUrl = AppSkinConfig.vivoBaseUrl;
 
     if (apiKey.isEmpty) {
       throw Exception('Missing env config: VIVO_API_KEY');
@@ -78,13 +74,20 @@ class VivoAiChatService {
           onTimeout: () => throw Exception('请求超时，请重试'),
         );
 
+    final String rawBody = utf8.decode(response.bodyBytes);
     if (response.statusCode != 200) {
-      final String detail = utf8.decode(response.bodyBytes);
-      debugPrint('Vivo API error: $detail');
-      throw Exception('Vivo API error: $detail');
+      debugPrint('Vivo API error: $rawBody');
+      throw Exception('Vivo API error: $rawBody');
     }
 
-    final dynamic data = jsonDecode(utf8.decode(response.bodyBytes));
+    dynamic data;
+    try {
+      data = jsonDecode(rawBody);
+    } catch (e) {
+      debugPrint('Vivo API response invalid json: $e');
+      throw Exception('Vivo API response invalid json');
+    }
+
     return _extractResponse(data);
   }
 
@@ -93,6 +96,10 @@ class VivoAiChatService {
     final String content = (message?['content'] as String?)?.trim() ?? '';
     final String? reasoning =
         (message?['reasoning_content'] as String?)?.trim();
+
+    if (content.isEmpty) {
+      throw Exception('Vivo API returned empty content.');
+    }
 
     return VivoChatResponse(content: content, reasoning: reasoning);
   }

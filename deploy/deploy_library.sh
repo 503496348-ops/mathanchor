@@ -1,10 +1,10 @@
 #!/bin/bash
 # 部署题库 API：PM2 启动 :3004 + Nginx 加 /api/library/ 路由
-# 安全：备份 Nginx 配置 + nginx -t 测试，失败自动回滚（不影响线上 mathmate.top）
-CONF=/etc/nginx/sites-enabled/mathmate
+# 安全：备份 Nginx 配置 + nginx -t 测试，失败自动回滚（不影响线上 your-domain.com）
+CONF=/etc/nginx/sites-enabled/mathanchor
 
 echo "===PM2_START==="
-pm2 start /opt/mathmate/library_server.js --name mathmate-library 2>&1 || pm2 restart mathmate-library 2>&1
+pm2 start /opt/mathanchor/library_server.js --name mathanchor-library 2>&1 || pm2 restart mathanchor-library 2>&1
 pm2 save 2>&1
 sleep 1
 echo "===HEALTH_3004==="
@@ -31,5 +31,5 @@ if nginx -t 2>&1; then
 else
   echo "===TEST_FAILED_ROLLBACK==="
   cp "$BAK" "$CONF"
-  echo "rolled back to $BAK (mathmate.top NOT affected)"
+  echo "rolled back to $BAK (your-domain.com NOT affected)"
 fi

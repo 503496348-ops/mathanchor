@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/widgets/flash_text.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/widgets/flash_text.dart';
 
 class FlashTextDemoPage extends StatefulWidget {
   const FlashTextDemoPage({super.key});
@@ -29,7 +30,7 @@ class _FlashTextDemoPageState extends State<FlashTextDemoPage> {
             )),
             const SizedBox(height: 24),
             _buildSection('2. 淡入效果', FlashText(
-              text: '欢迎使用MathMate',
+              text: '欢迎使用 ${AppSkinConfig.appName}',
               flashStyle: FlashTextStyle.fadeIn,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             )),
@@ -85,7 +86,7 @@ class _FlashTextDemoPageState extends State<FlashTextDemoPage> {
             )),
             const SizedBox(height: 24),
             _buildSection('11. Logo动画', AnimatedLogoText(
-              text: 'MathMate',
+              text: AppSkinConfig.appName,
               baseStyle: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             )),
             const SizedBox(height: 24),
@@ -163,7 +164,7 @@ class _FlashTextDemoPageState extends State<FlashTextDemoPage> {
           ),
           const SizedBox(height: 16),
           const Text(
-            '在MathMate应用中的典型使用场景：',
+            '在 ${AppSkinConfig.appName} 应用中的典型使用场景：',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),

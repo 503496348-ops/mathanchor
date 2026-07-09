@@ -1,4 +1,4 @@
-# MathMate AI 组件推荐报告
+# 数理锚点 AI 组件推荐报告
 
 ## 📋 目录
 - [OCR 识别组件](#ocr-识别组件)
@@ -262,7 +262,7 @@ dependencies:
 
 ## 📎 相关链接
 
-- [MathMate 项目](https://github.com/mzk-C4/mathmate)
+- [数理锚点 项目](https://github.com/mzk-C4/mathanchor)
 - [已克隆仓库位置](file:///D:/projects/add/)
 - [ToRA](https://github.com/microsoft/ToRA)
 - [DeepSeek-Math](https://github.com/deepseek-ai/DeepSeek-Math)

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:mathmate/learner/models/learner_profile.dart';
-import 'package:mathmate/learner/prompts/profile_prompts.dart';
-import 'package:mathmate/services/app_logger.dart';
-import 'package:mathmate/services/deepseek_service.dart';
+import 'package:math_anchor/learner/models/learner_profile.dart';
+import 'package:math_anchor/learner/prompts/profile_prompts.dart';
+import 'package:math_anchor/services/app_logger.dart';
+import 'package:math_anchor/services/deepseek_service.dart';
 
 /// 学习者画像构建服务 —— 对标赛题要求①
 ///

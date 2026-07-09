@@ -35,7 +35,7 @@ class AppLogger {
 
   String export() {
     final StringBuffer sb = StringBuffer();
-    sb.writeln('=== MathMate 调试日志 (Web) ===');
+    sb.writeln('=== 数理锚点 调试日志 (Web) ===');
     sb.writeln('导出时间: ${DateTime.now().toIso8601String()}');
     sb.writeln();
     for (final String line in _buffer) {

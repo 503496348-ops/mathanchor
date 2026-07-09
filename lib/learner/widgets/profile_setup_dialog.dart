@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/learner/models/learner_profile.dart';
-import 'package:mathmate/learner/services/profile_builder_service.dart';
-import 'package:mathmate/learner/services/profile_repository.dart';
+import 'package:math_anchor/learner/models/learner_profile.dart';
+import 'package:math_anchor/learner/services/profile_builder_service.dart';
+import 'package:math_anchor/learner/services/profile_repository.dart';
 
 /// 对话式学习画像构建对话框 —— 对标赛题要求①
 ///

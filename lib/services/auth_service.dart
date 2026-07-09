@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
 
 /// 用户信息模型
 class AuthUser {
@@ -52,7 +53,7 @@ class AuthResponse {
 ///
 /// 与服务端 auth_server.js 通信，Token 存储在 SharedPreferences。
 class AuthService {
-  static const String _baseUrl = 'https://mathmate.top/api/auth';
+  String get _baseUrl => AppSkinConfig.authApiBaseUrl;
   static const String _tokenKey = 'auth_token';
   static const String _userKey = 'auth_user';
 
@@ -62,6 +63,12 @@ class AuthService {
 
   String? _token;
   AuthUser? _user;
+
+  String _joinPath(String path) {
+    final String base = _baseUrl.endsWith('/') ? _baseUrl.substring(0, _baseUrl.length - 1) : _baseUrl;
+    final String cleaned = path.startsWith('/') ? path.substring(1) : path;
+    return '$base/$cleaned';
+  }
 
   bool get isLoggedIn => _token != null;
   String? get token => _token;
@@ -117,8 +124,8 @@ class AuthService {
   Future<AuthResponse> _post(String path, Map<String, dynamic> body) async {
     try {
       final response = await http
-          .post(
-            Uri.parse('$_baseUrl/$path'),
+   .post(
+     Uri.parse(_joinPath(path)),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(body),
           )
@@ -142,7 +149,7 @@ class AuthService {
   Future<AuthResponse> _get(String path) async {
     try {
       final response = await http.get(
-        Uri.parse('$_baseUrl/$path'),
+   Uri.parse(_joinPath(path)),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${_token ?? ''}',
@@ -185,7 +192,7 @@ class AuthService {
   Future<Map<String, dynamic>> sendCode({String email = '', String phone = ''}) async {
     try {
       final r = await http.post(
-        Uri.parse('$_baseUrl/send-code'),
+        Uri.parse(_joinPath('send-code')),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'phone': phone}),
       ).timeout(const Duration(seconds: 10));
@@ -199,7 +206,7 @@ class AuthService {
   Future<Map<String, dynamic>> verifyCode({String email = '', String phone = '', required String code}) async {
     try {
       final r = await http.post(
-        Uri.parse('$_baseUrl/verify-code'),
+        Uri.parse(_joinPath('verify-code')),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'phone': phone, 'code': code}),
       ).timeout(const Duration(seconds: 10));

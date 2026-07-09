@@ -1,4 +1,4 @@
-/// MathMate AI Drawing Prompts
+/// MathAnchor AI Drawing Prompts
 /// 移植自 PlotKityCat 项目，用于数学可视化代码生成
 ///
 /// 这个类包含了所有用于 AI 绘图功能的 Prompt 模板，

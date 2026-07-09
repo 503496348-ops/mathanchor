@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/models/user_profile.dart';
-import 'package:mathmate/services/user_profile_service.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/models/user_profile.dart';
+import 'package:math_anchor/services/user_profile_service.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -130,7 +131,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _save() {
     _profileService.save(UserProfile(
-      nickname: _nicknameCtrl.text.trim().isEmpty ? 'MathMate_User' : _nicknameCtrl.text.trim(),
+      nickname: _nicknameCtrl.text.trim().isEmpty
+          ? '${AppSkinConfig.appName}_User'
+          : _nicknameCtrl.text.trim(),
       avatar: _profileService.profile.avatar,
       grade: _grade,
       bio: _bioCtrl.text.trim(),

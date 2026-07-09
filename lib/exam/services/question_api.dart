@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mathmate/exam/models/question.dart';
+import 'package:math_anchor/config/app_skin_config.dart';
+import 'package:math_anchor/exam/models/question.dart';
 
-/// 题库 API 客户端（接云端 mathmate.top）
+/// 题库 API 客户端（接配置化云端题库服务）
 ///
 /// 端点见 docs/library_api.md。
 /// 队员开发考试功能（组卷/判卷/评估）时复用此类。
 class QuestionApi {
-  static const String baseUrl = 'https://mathmate.top/api/library';
+  static String get baseUrl => AppSkinConfig.libraryApiBaseUrl;
 
   /// 题库列表（支持板块/题型/难度/关键词过滤 + 分页）
   Future<({List<Question> items, int total})> fetchQuestions({

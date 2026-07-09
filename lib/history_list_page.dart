@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/beautiful_result_page.dart';
-import 'package:mathmate/data/hive_models.dart';
-import 'package:mathmate/data/history_repository.dart';
+import 'package:math_anchor/beautiful_result_page.dart';
+import 'package:math_anchor/data/hive_models.dart';
+import 'package:math_anchor/data/history_repository.dart';
 
 class HistoryListPage extends StatefulWidget {
   const HistoryListPage({super.key});

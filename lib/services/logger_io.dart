@@ -18,7 +18,7 @@ class AppLogger {
     if (_initialized) return;
     try {
       final Directory dir = await getApplicationDocumentsDirectory();
-      _logFile = File('${dir.path}/mathmate_debug.log');
+      _logFile = File('${dir.path}/mathanchor_debug.log');
       _initialized = true;
     } catch (e) {
       debugPrint('[AppLogger] 初始化失败: $e');
@@ -67,7 +67,7 @@ class AppLogger {
   void _appendLine(String line) {
     try {
       if (!_logFile!.existsSync()) {
-        _logFile!.writeAsStringSync('=== MathMate 调试日志 ===\n');
+        _logFile!.writeAsStringSync('=== 数理锚点 调试日志 ===\n');
       }
       _logFile!.writeAsStringSync('$line\n', mode: FileMode.append);
       _trimFileIfNeeded();
@@ -93,7 +93,7 @@ class AppLogger {
 
   String export() {
     final StringBuffer sb = StringBuffer();
-    sb.writeln('=== MathMate 调试日志 ===');
+    sb.writeln('=== 数理锚点 调试日志 ===');
     sb.writeln('导出时间: ${DateTime.now().toIso8601String()}');
     sb.writeln();
 

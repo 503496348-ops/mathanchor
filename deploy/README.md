@@ -1,11 +1,11 @@
-# MathMate Web 部署指南
+# 数理锚点 Web 部署指南
 
 ## 一、构建 Web 前端
 
 在本机（Windows）执行：
 
 ```cmd
-cd D:\projects\MathMate
+cd D:\projects\数理锚点
 
 :: 备份原始 .env
 copy .env .env.backup
@@ -29,11 +29,11 @@ del .env.backup
 
 ```bash
 # 上传 Web 前端
-scp -r build/web/* user@mathmate.top:/var/www/mathmate/
+scp -r build/web/* user@your-domain.com:/var/www/mathanchor/
 
 # 上传代理服务
-scp deploy/proxy_server.js user@mathmate.top:/opt/mathmate/proxy_server.js
-scp deploy/package.json user@mathmate.top:/opt/mathmate/package.json
+scp deploy/proxy_server.js user@your-domain.com:/opt/mathanchor/proxy_server.js
+scp deploy/package.json user@your-domain.com:/opt/mathanchor/package.json
 ```
 
 ---
@@ -52,19 +52,19 @@ sudo apt install -y nodejs
 ### 2. 配置 API Key
 
 ```bash
-sudo mkdir -p /opt/mathmate
-cd /opt/mathmate
+sudo mkdir -p /opt/mathanchor
+cd /opt/mathanchor
 
 # 编辑 .env.server，填入你的真实 API Key
-sudo nano /opt/mathmate/.env.server
+sudo nano /opt/mathanchor/.env.server
 ```
 
 ### 3. 启动 API 代理（PM2 守护）
 
 ```bash
 sudo npm install -g pm2
-cd /opt/mathmate
-pm2 start proxy_server.js --name mathmate-proxy
+cd /opt/mathanchor
+pm2 start proxy_server.js --name mathanchor-proxy
 pm2 save
 pm2 startup   # 设置开机自启
 ```
@@ -72,7 +72,7 @@ pm2 startup   # 设置开机自启
 ### 4. 部署 Web 前端
 
 ```bash
-sudo mkdir -p /var/www/mathmate
+sudo mkdir -p /var/www/mathanchor
 # 上传 build/web/ 内容到此目录
 ```
 
@@ -82,8 +82,8 @@ sudo mkdir -p /var/www/mathmate
 sudo apt install -y nginx
 
 # 复制 Nginx 配置
-sudo cp deploy/mathmate.nginx /etc/nginx/sites-available/mathmate.top
-sudo ln -s /etc/nginx/sites-available/mathmate.top /etc/nginx/sites-enabled/
+sudo cp deploy/mathanchor.nginx /etc/nginx/sites-available/your-domain.com
+sudo ln -s /etc/nginx/sites-available/your-domain.com /etc/nginx/sites-enabled/
 sudo nginx -t   # 检查配置
 sudo systemctl reload nginx
 ```
@@ -92,7 +92,7 @@ sudo systemctl reload nginx
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d mathmate.top -d www.mathmate.top
+sudo certbot --nginx -d your-domain.com -d www.your-domain.com
 ```
 
 ---
@@ -109,7 +109,7 @@ curl -X POST http://127.0.0.1:3001/api/deepseek \
   -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"hello"}]}'
 
 # 检查 Nginx
-curl -I https://mathmate.top
+curl -I https://your-domain.com
 ```
 
 ---
@@ -121,7 +121,7 @@ curl -I https://mathmate.top
 ```bash
 # 本机
 flutter build web --release   # 记得先用 deploy/.env.web 替换 .env
-scp -r build/web/* user@mathmate.top:/var/www/mathmate/
+scp -r build/web/* user@your-domain.com:/var/www/mathanchor/
 ```
 
 代理服务无需改动。

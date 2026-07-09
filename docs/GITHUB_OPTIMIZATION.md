@@ -1,6 +1,6 @@
-# 🎨 MathMate GitHub 仓库优化指南
+# 🎨 数理锚点 GitHub 仓库优化指南
 
-本指南帮助你优化 MathMate 在 GitHub 上的展示效果，包括仓库简介、Description、Topics 等。
+本指南帮助你优化 数理锚点 在 GitHub 上的展示效果，包括仓库简介、Description、Topics 等。
 
 ---
 
@@ -45,7 +45,7 @@ flutter, dart, mathematics, education, ai, deepseek, ocr, geometry-visualization
 
 在仓库主页的 "About" 区域设置：
 
-1. **Website**: `https://mathmate.top`
+1. **Website**: `https://your-domain.com`
 2. **Topics**: 添加上述标签
 
 ---
@@ -65,7 +65,7 @@ GitHub 会自动使用以下内容生成社交预览：
 ### 测试链接
 
 ```
-https://www.opengraph.xyz/https://github.com/mzk-C4/mathmate
+https://www.opengraph.xyz/https://github.com/mzk-C4/mathanchor
 ```
 
 ---
@@ -77,7 +77,7 @@ https://www.opengraph.xyz/https://github.com/mzk-C4/mathmate
 推荐尺寸：**1280 × 640 像素**
 
 包含元素：
-- MathMate Logo
+- 数理锚点 Logo
 - 应用截图
 - 核心功能文字
 - GitHub 信息
@@ -133,10 +133,10 @@ mkdir -p .github/images
 确保以下链接正确：
 
 ```markdown
-- 官网: https://mathmate.top
-- 技术文档: https://mathmate.top/tech.html
+- 官网: https://your-domain.com
+- 技术文档: https://your-domain.com/tech.html
 - 演示视频: https://www.bilibili.com/video/BV1EfLJ6bEnw/
-- 在线体验: https://mathmate.top/app
+- 在线体验: https://your-domain.com/app
 ```
 
 ### Footer 链接
@@ -145,10 +145,10 @@ mkdir -p .github/images
 
 ```html
 <div align="center">
-  <a href="https://mathmate.top">官网</a> •
-  <a href="https://mathmate.top/tech.html">技术文档</a> •
+  <a href="https://your-domain.com">官网</a> •
+  <a href="https://your-domain.com/tech.html">技术文档</a> •
   <a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/">演示视频</a> •
-  <a href="https://github.com/mzk-C4/mathmate/issues">问题反馈</a>
+  <a href="https://github.com/mzk-C4/mathanchor/issues">问题反馈</a>
 </div>
 ```
 
@@ -171,7 +171,7 @@ mkdir -p .github/images
 
 ### 创建 Organization
 
-创建 `mathmate-app` Organization：
+创建 `mathanchor-app` Organization：
 - 更专业的展示
 - 多人协作管理
 - 品牌化展示
@@ -180,7 +180,7 @@ mkdir -p .github/images
 
 ```bash
 # 在本地仓库执行
-git remote set-url origin git@github.com:mathmate-app/mathmate.git
+git remote set-url origin git@github.com:mathanchor-app/mathanchor.git
 git push -u origin main
 ```
 
@@ -193,14 +193,14 @@ git push -u origin main
 每个版本应包含：
 
 1. **Tag**: `v2.3.2`
-2. **Title**: `MathMate v2.3.2 - 功能描述`
+2. **Title**: `数理锚点 v2.3.2 - 功能描述`
 3. **Description**: 更新日志
 4. **Assets**: APK 文件、截图
 
 ### Release 模板
 
 ```markdown
-## 🎉 MathMate v2.3.2
+## 🎉 数理锚点 v2.3.2
 
 ### ✨ 新功能
 - 功能 1
@@ -211,13 +211,13 @@ git push -u origin main
 - 修复问题 2
 
 ### 📦 下载
-- [Android APK](attachments/apk/mathmate-v2.3.2.apk)
+- [Android APK](attachments/apk/mathanchor-v2.3.2.apk)
 
 ### 📸 截图
 ![截图1](attachments/screenshots/screenshot-1.jpg)
 
 ---
-**完整更新日志**: [CHANGELOG.md](https://github.com/mzk-C4/mathmate/blob/main/CHANGELOG.md)
+**完整更新日志**: [CHANGELOG.md](https://github.com/mzk-C4/mathanchor/blob/main/CHANGELOG.md)
 ```
 
 ---
@@ -236,18 +236,18 @@ git push -u origin main
 
 **Twitter:**
 ```
-🧮 MathMate - AI驱动的智能数学学习应用
+🧮 数理锚点 - AI驱动的智能数学学习应用
 
 拍照搜题 + 几何可视化 + AI对话助手
 
 #Flutter #AI #MathEducation
 
-https://github.com/mzk-C4/mathmate
+https://github.com/mzk-C4/mathanchor
 ```
 
 **LinkedIn:**
 ```
-很高兴分享我们的开源项目 MathMate！
+很高兴分享我们的开源项目 数理锚点！
 
 这是一款基于 Flutter + AI 的智能数学学习应用，提供拍照搜题、几何可视化、AI 对话等功能。
 
@@ -260,15 +260,15 @@ https://github.com/mzk-C4/mathmate
 
 ### HackerNews
 
-标题：`Show HN: MathMate - AI-Powered Math Learning App with Interactive Geometry`
+标题：`Show HN: 数理锚点 - AI-Powered Math Learning App with Interactive Geometry`
 
 ### Reddit（r/FlutterDev, r/learnprogramming）
 
-标题：`MathMate: Open-source AI math learning app built with Flutter`
+标题：`数理锚点: Open-source AI math learning app built with Flutter`
 
 ### Product Hunt
 
-标题：`MathMate - AI-powered math learning with interactive geometry`
+标题：`数理锚点 - AI-powered math learning with interactive geometry`
 
 ---
 
@@ -278,9 +278,9 @@ https://github.com/mzk-C4/mathmate
 
 ```markdown
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
-![Stars](https://img.shields.io/github/stars/mzk-C4/mathmate)
+![Stars](https://img.shields.io/github/stars/mzk-C4/mathanchor)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Issues](https://img.shields.io/github/issues/mzk-C4/mathmate)
+![Issues](https://img.shields.io/github/issues/mzk-C4/mathanchor)
 ```
 
 ---

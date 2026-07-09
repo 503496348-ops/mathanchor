@@ -1,4 +1,4 @@
-# MathMate 服务器共同开发交接文档
+# 数理锚点 服务器共同开发交接文档
 
 > 版本 v1.0 · 2026-07-08 · 交接人：马兆坤
 > 适用：题库 + 考试功能（组卷/判卷/评估）的共同开发
@@ -8,7 +8,7 @@
 
 ## 1. 一句话概览
 
-服务器 `mathmate.top`（阿里云 ECS）已部署**题库 API**（`/api/library/`），本地已搭好**数据生产链路**（MinerU + 切题打标脚本）和 **App 题库骨架**（`lib/exam/`）。你的任务：基于这套基础设施开发**考试三件套**（组卷/判卷/评估）。
+服务器 `your-domain.com`（阿里云 ECS）已部署**题库 API**（`/api/library/`），本地已搭好**数据生产链路**（MinerU + 切题打标脚本）和 **App 题库骨架**（`lib/exam/`）。你的任务：基于这套基础设施开发**考试三件套**（组卷/判卷/评估）。
 
 ---
 
@@ -16,15 +16,15 @@
 
 | 项 | 值 |
 |---|---|
-| 域名 | `mathmate.top` |
+| 域名 | `your-domain.com` |
 | 公网 IP | `47.94.83.150` |
 | 系统 | 阿里云 ECS · Ubuntu 22.04 |
 | SSH 用户 | `root` |
-| SSH 密钥 | `C:/Users/MZK/.ssh/mathmate_server`（**向马兆坤索取该密钥文件**，放到自己 `~/.ssh/`） |
+| SSH 密钥 | `C:/Users/MZK/.ssh/mathanchor_server`（**向马兆坤索取该密钥文件**，放到自己 `~/.ssh/`） |
 
 ### 连接命令
 ```bash
-ssh -i ~/.ssh/mathmate_server -o StrictHostKeyChecking=no root@mathmate.top
+ssh -i ~/.ssh/mathanchor_server -o StrictHostKeyChecking=no root@your-domain.com
 ```
 
 ### ⚠️ fail2ban 注意（重要）
@@ -40,13 +40,13 @@ ssh -i ~/.ssh/mathmate_server -o StrictHostKeyChecking=no root@mathmate.top
 ### PM2 服务（`pm2 list`）
 | id | name | 端口 | 代码 | 用途 |
 |---|---|---|---|---|
-| 0 | mathmate-proxy | :3001 | `/opt/mathmate/proxy_server.js` | AI 代理（DeepSeek/Vivo/Volc，密钥在 `.env.server`） |
-| 6 | **mathmate-library** | **:3004** | `/opt/mathmate/library_server.js` | **题库 API（本次新增）** |
+| 0 | mathanchor-proxy | :3001 | `/opt/mathanchor/proxy_server.js` | AI 代理（DeepSeek/Vivo/Volc，密钥在 `.env.server`） |
+| 6 | **mathanchor-library** | **:3004** | `/opt/mathanchor/library_server.js` | **题库 API（本次新增）** |
 | 5 | geogebra-chat | :3003 | `/opt/geogebra-chat/` | GeoChat |
 
-> auth_server（:3002）代码在 `/opt/mathmate/auth_server.js`，处理 `/api/auth/`。
+> auth_server（:3002）代码在 `/opt/mathanchor/auth_server.js`，处理 `/api/auth/`。
 
-### Nginx 路由（`/etc/nginx/sites-enabled/mathmate`）
+### Nginx 路由（`/etc/nginx/sites-enabled/mathanchor`）
 ```
 /api/auth/       → :3002
 /api/library/    → :3004   ← 本次新增（最长前缀优先，不影响 /api/ 兜底）
@@ -57,7 +57,7 @@ ssh -i ~/.ssh/mathmate_server -o StrictHostKeyChecking=no root@mathmate.top
 
 ### 关键目录
 ```
-/opt/mathmate/
+/opt/mathanchor/
 ├── proxy_server.js          # AI 代理
 ├── auth_server.js           # 认证
 ├── library_server.js        # ★ 题库 API（本次新增）
@@ -72,7 +72,7 @@ ssh -i ~/.ssh/mathmate_server -o StrictHostKeyChecking=no root@mathmate.top
 
 ## 4. 题库 API（你的开发核心）
 
-**Base URL**: `https://mathmate.top/api/library`
+**Base URL**: `https://your-domain.com/api/library`
 
 完整端点 + Schema + curl 示例见 **`docs/library_api.md`**。速查：
 
@@ -133,11 +133,11 @@ python scripts/question_pipeline/build_questions.py \
   "<parsed .../main.md>" "<来源标记如2024新高考I卷>" "<输出 questions.json>"
 ```
 切题（按题型区+题号）+ 选项提取 + DeepSeek 打标（板块/题型/难度/知识点/答案/解析）→ Question JSON。
-依赖：`.env` 里的 `DEEPSEEK_API_KEY/MODEL_ID/BASE_URL`（MathMate 项目根）。
+依赖：`.env` 里的 `DEEPSEEK_API_KEY/MODEL_ID/BASE_URL`（数理锚点 项目根）。
 
 ### 5.3 灌库
 ```bash
-curl -X POST https://mathmate.top/api/library/questions/batch \
+curl -X POST https://your-domain.com/api/library/questions/batch \
   -H "Content-Type: application/json" -d @questions_xxx.json
 ```
 
@@ -181,17 +181,17 @@ lib/exam/
 ```bash
 # 1. 本地改 deploy/library_server.js
 # 2. 上传 + 重启（一次 scp + 一次 ssh）
-scp -i ~/.ssh/mathmate_server deploy/library_server.js root@mathmate.top:/opt/mathmate/
-ssh -i ~/.ssh/mathmate_server root@mathmate.top 'pm2 restart mathmate-library && pm2 save'
+scp -i ~/.ssh/mathanchor_server deploy/library_server.js root@your-domain.com:/opt/mathanchor/
+ssh -i ~/.ssh/mathanchor_server root@your-domain.com 'pm2 restart mathanchor-library && pm2 save'
 ```
 
 ### 场景 B：改了 Nginx（加路由）
 **务必用带备份+测试+回滚的脚本**（参考 `deploy/deploy_library.sh`）：
 ```bash
 # 备份 → 改 → nginx -t → 通过才 reload（失败自动回滚）
-cp /etc/nginx/sites-enabled/mathmate /etc/nginx/sites-enabled/mathmate.bak.<日期>
+cp /etc/nginx/sites-enabled/mathanchor /etc/nginx/sites-enabled/mathanchor.bak.<日期>
 # ...编辑配置...
-nginx -t && nginx -s reload || cp <备份> /etc/nginx/sites-enabled/mathmate  # 回滚
+nginx -t && nginx -s reload || cp <备份> /etc/nginx/sites-enabled/mathanchor  # 回滚
 ```
 
 ### 场景 C：产新题灌库
@@ -207,34 +207,34 @@ MinerU 解析 → `build_questions.py` 切题打标 → `curl POST .../questions
 ### PM2 常用
 ```bash
 pm2 list                       # 查看服务
-pm2 restart mathmate-library   # 重启题库
-pm2 logs mathmate-library      # 看日志
-pm2 stop mathmate-library      # 停
+pm2 restart mathanchor-library   # 重启题库
+pm2 logs mathanchor-library      # 看日志
+pm2 stop mathanchor-library      # 停
 pm2 save                       # 保存进程列表（开机自启）
 ```
 
 ### 题库数据备份
 ```bash
-ssh root@mathmate.top 'cp /opt/mathmate/library_questions.json /opt/mathmate/library_questions.json.bak.$(date +%Y%m%d)'
+ssh root@your-domain.com 'cp /opt/mathanchor/library_questions.json /opt/mathanchor/library_questions.json.bak.$(date +%Y%m%d)'
 ```
-或本地拉一份：`scp root@mathmate.top:/opt/mathmate/library_questions.json ./`
+或本地拉一份：`scp root@your-domain.com:/opt/mathanchor/library_questions.json ./`
 
 ### Nginx
-- 配置：`/etc/nginx/sites-enabled/mathmate`
+- 配置：`/etc/nginx/sites-enabled/mathanchor`
 - 测试：`nginx -t`（改完必测）
 - 重载：`nginx -s reload`
-- 备份目录：`/etc/nginx/sites-enabled/mathmate.bak.*`
+- 备份目录：`/etc/nginx/sites-enabled/mathanchor.bak.*`
 
 ---
 
 ## 9. 已知问题 + 注意事项
 
-1. **Nginx `conflicting server name` 警告**：mathmate.top 配置里多个 server 块都声明了 `server_name`（预存老问题），nginx 仍 success、不影响功能。别动它，除非你要重构 Nginx。
+1. **Nginx `conflicting server name` 警告**：your-domain.com 配置里多个 server 块都声明了 `server_name`（预存老问题），nginx 仍 success、不影响功能。别动它，除非你要重构 Nginx。
 2. **题库 API 暂无认证**：内部开发用。上生产前接 `auth_server`(:3002) 的 token（`POST /api/auth/` 那套）。
 3. **题库存储是 JSON 文件**：初期千级够用，多人并发写有风险（同时录题可能丢）。题库破万或高频写时迁 SQLite/MySQL（改 `library_server.js` 的 load/save 函数即可，API 不变）。
 4. **`/api/` 是兜底路由**：新加 `/api/xxx/` 要放在 `/api/` 前面（或靠最长前缀优先，像 `/api/library/` 那样）。
 5. **fail2ban**：SSH 一次做多步，别频繁断连（见 §2）。
-6. **MathMate `.env`（本地）vs 服务器 `.env.server`**：本地 `.env` 给 Flutter App + 切题脚本用（DeepSeek key）；服务器 `.env.server` 给 proxy_server 用。两边 key 相同但文件不同。
+6. **数理锚点 `.env`（本地）vs 服务器 `.env.server`**：本地 `.env` 给 Flutter App + 切题脚本用（DeepSeek key）；服务器 `.env.server` 给 proxy_server 用。两边 key 相同但文件不同。
 
 ---
 
@@ -254,5 +254,5 @@ ssh root@mathmate.top 'cp /opt/mathmate/library_questions.json /opt/mathmate/lib
 
 ## 11. 联系
 - 交接人：马兆坤
-- 出问题先看：`pm2 logs <服务>` + `nginx -t` + `curl https://mathmate.top/api/library/health`
+- 出问题先看：`pm2 logs <服务>` + `nginx -t` + `curl https://your-domain.com/api/library/health`
 - 部署改动务必先备份（`cp ... .bak.日期`），能回滚

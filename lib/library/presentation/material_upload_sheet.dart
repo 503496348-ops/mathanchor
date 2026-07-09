@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/library/models/study_material.dart';
+import 'package:math_anchor/library/models/study_material.dart';
 
 /// 上传选择底部弹层 —— 4 类资料入口
 ///

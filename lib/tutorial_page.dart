@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/main.dart';
-import 'package:mathmate/data/history_repository.dart';
+import 'package:math_anchor/main.dart';
+import 'package:math_anchor/data/history_repository.dart';
 
 class TutorialPage extends StatefulWidget {
   final bool isFromSettings;

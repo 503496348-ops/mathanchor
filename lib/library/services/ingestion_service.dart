@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mathmate/library/models/study_material.dart';
-import 'package:mathmate/library/services/classification_service.dart';
-import 'package:mathmate/library/services/material_repository.dart';
-import 'package:mathmate/library/services/parsing/image_ocr_parser.dart';
-import 'package:mathmate/services/app_logger.dart';
+import 'package:math_anchor/library/models/study_material.dart';
+import 'package:math_anchor/library/services/classification_service.dart';
+import 'package:math_anchor/library/services/material_repository.dart';
+import 'package:math_anchor/library/services/parsing/image_ocr_parser.dart';
+import 'package:math_anchor/services/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// 资料采集服务：采集 → 落盘 → 解析 → 分类 → 入库 的总调度

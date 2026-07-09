@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 // ============================================================
-// MathMate 题库 API 服务（独立微服务）
+// 数理锚点 题库 API 服务（独立微服务）
 // 用途：题库 CRUD + 批量导入 + 板块/统计，供 App 多端 + 多人协作
 // 启动: node library_server.js
 // 端口: 3004（Nginx 反反代 /api/library/* → localhost:3004）

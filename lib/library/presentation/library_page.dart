@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mathmate/library/models/study_material.dart';
-import 'package:mathmate/library/presentation/material_upload_sheet.dart';
-import 'package:mathmate/library/services/ingestion_service.dart';
-import 'package:mathmate/library/services/material_repository.dart';
+import 'package:math_anchor/library/models/study_material.dart';
+import 'package:math_anchor/library/presentation/material_upload_sheet.dart';
+import 'package:math_anchor/library/services/ingestion_service.dart';
+import 'package:math_anchor/library/services/material_repository.dart';
 
 /// 资料库主页（底部导航「资料库」tab）
 ///

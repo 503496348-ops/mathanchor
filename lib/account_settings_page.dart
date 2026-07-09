@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mathmate/edit_profile_page.dart';
+import 'package:math_anchor/edit_profile_page.dart';
 
 class AccountSettingsPage extends StatelessWidget {
   const AccountSettingsPage({super.key});

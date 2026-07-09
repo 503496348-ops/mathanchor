@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mathmate/models/user_profile.dart';
+import 'package:math_anchor/models/user_profile.dart';
 
 class UserProfileService extends ChangeNotifier {
   static final UserProfileService _instance = UserProfileService._();

@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mathmate/learner/models/learner_profile.dart';
+import 'package:math_anchor/learner/models/learner_profile.dart';
 
 /// 学习者画像存储 —— 对标赛题要求①「随学随新」
 ///
