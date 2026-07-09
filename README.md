@@ -10,14 +10,14 @@
   [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)](https://flutter.dev)
   [![Dart](https://img.shields.io/badge/Dart-^3.11.3-blue?logo=dart)](https://dart.dev)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-lightgrey)](https://github.com/mzk-C4/mathanchor)
-  [![Version](https://img.shields.io/badge/v2.3.2-purple)](https://github.com/mzk-C4/mathanchor/releases)
+  [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-lightgrey)](https://github.com/503496348-ops/mathanchor)
+  [![Version](https://img.shields.io/badge/v1.0.0-purple)](https://github.com/503496348-ops/mathanchor/releases)
 
   **拍照搜题 · 几何可视化 · AI 对话助手 · 数学工具箱**
 
 > 本项目的品牌名、服务端点、模型参数等均支持通过 `.env` 与 `lib/config/app_skin_config.dart` 进行可配置换皮。
 
-  [官网示例](https://example.com) · [技术详解](https://example.com/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [在线体验](https://example.com/app)
+  [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/)
 
 </div>
 
@@ -29,10 +29,7 @@
 
 支持手写和印刷题目的智能识别，AI 自动生成详细的分步解析。10 秒内完成「拍照 → 识别 → 解题 → 可视化」全流程，无题库限制。
 
-<p align="center">
-  <img src="https://example.com/images/app-search.jpg" width="260" alt="拍照识别">
-  <img src="https://example.com/images/app-result.jpg" width="260" alt="AI解题">
-</p>
+
 
 ### 🎨 交互式几何可视化
 
@@ -137,7 +134,7 @@
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/mzk-C4/mathanchor.git
+git clone https://github.com/503496348-ops/mathanchor.git
 cd mathanchor
 
 # 2. 安装依赖
@@ -239,38 +236,12 @@ lib/
 | **专业工具** | ✅ GeoGebra 6件套 | ❌ 无 | ❌ 无 |
 | **数学严谨性** | ★★★★★ 92分 | ★★☆☆☆ 48分 | ★★★☆☆ 72分 |
 
----
-
-## 🌐 在线体验
-
-- **官网**: https://example.com
-- **技术详解**: https://example.com/tech.html
-- **Flutter Web**: https://example.com/app
-
----
-
-## 📸 应用截图
-
-### 拍照搜题 · 一站式解题流程
-
-<p align="center">
-  <img src="https://example.com/images/app-search.jpg" width="220" alt="拍照识别">
-  <img src="https://example.com/images/app-result.jpg" width="220" alt="AI 求解">
-</p>
-
-### 核心功能模块
-
-<p align="center">
-  <img src="https://example.com/images/app-chat.jpg" width="220" alt="AI 对话">
-  <img src="https://example.com/images/app-notes.png" width="220" alt="手写笔记">
-  <img src="https://example.com/images/app-tools.jpg" width="220" alt="数学工具箱">
-</p>
 
 ---
 
 ## 🔮 开发路线
 
-### ✅ 已完成 (v2.3.2)
+### ✅ 已完成 (v1.0.0)
 
 - [x] 核心流水线（OCR → 解题 → 可视化）
 - [x] AI 对话助手（流式响应）
@@ -296,36 +267,6 @@ lib/
 
 ---
 
-## 🤝 贡献指南
-
-欢迎提交 Issue 和 Pull Request！
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
-
----
-
-## 👥 团队
-
-**AK完全队** — 来自软件学院的跨学科创新团队
-
-| 成员 | 角色 |
-|:----|:----|
-| **马兆坤** | 产品经理 |
-| **丁宇鑫** | 前端设计 |
-| **周星橙** | 前端开发 |
-| **章开元** | 后端开发 |
-| **应沛成** | AI 提示词工程师 |
-
-**指导老师**
-- 孙永谦（副教授 · 博士生导师）
-- 王超（副研究员 · 硕士生导师）
-
----
-
 ## 📄 开源协议
 
 本项目采用 **MIT 协议**开源 — 详见 [LICENSE](LICENSE) 文件
@@ -335,7 +276,7 @@ lib/
 ## 🌟 Star History
 
 <p align="center">
-  <a href="https://github.com/mzk-C4/mathanchor/stargazers">
+  <a href="https://github.com/503496348-ops/mathanchor/stargazers">
     <img src="assets/star_badge.svg" alt="GitHub stars">
   </a>
 </p>
@@ -348,8 +289,8 @@ lib/
 
   **如果觉得有用，请给我们一个 ⭐Star⭐**
 
-  Made with ❤️ by AK完全队
+  Made with ❤️ by 数理锚点
 
-  [官网](https://example.com) · [技术文档](https://example.com/tech.html) · [演示视频](https://www.bilibili.com/video/BV1EfLJ6bEnw/) · [问题反馈](https://github.com/mzk-C4/mathanchor/issues)
+  [问题反馈](https://github.com/503496348-ops/mathanchor/issues)
 
 </div>

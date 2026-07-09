@@ -262,7 +262,7 @@ dependencies:
 
 ## 📎 相关链接
 
-- [数理锚点 项目](https://github.com/mzk-C4/mathanchor)
+- [数理锚点 项目](https://github.com/503496348-ops/mathanchor)
 - [已克隆仓库位置](file:///D:/projects/add/)
 - [ToRA](https://github.com/microsoft/ToRA)
 - [DeepSeek-Math](https://github.com/deepseek-ai/DeepSeek-Math)

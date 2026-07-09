@@ -24,7 +24,7 @@ gh release upload v2.3.2 \
 然后在 README 中引用：
 
 ```markdown
-![拍照搜题](https://github.com/mzk-C4/mathanchor/releases/download/v2.3.2/screenshot-1.jpg)
+![拍照搜题](https://github.com/503496348-ops/mathanchor/releases/download/v2.3.2/screenshot-1.jpg)
 ```
 
 ### 方式二：使用 GitHub Issue Comments
@@ -134,7 +134,7 @@ screenshot-notes-handwriting.jpg   # 笔记 - 手写
 README.md 中使用了占位符 URL：
 
 ```markdown
-![截图](https://github.com/mzk-C4/mathanchor/assets/your-username/screenshot-1.jpg)
+![截图](https://github.com/503496348-ops/mathanchor/assets/your-username/screenshot-1.jpg)
 ```
 
 将 `your-username` 替换为你的 GitHub 用户名，`screenshot-1.jpg` 替换为实际图片文件名。

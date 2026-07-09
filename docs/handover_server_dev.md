@@ -1,6 +1,6 @@
 # 数理锚点 服务器共同开发交接文档
 
-> 版本 v1.0 · 2026-07-08 · 交接人：马兆坤
+> 版本 v1.0 · 2026-07-08 · 交接人：[待填写]
 > 适用：题库 + 考试功能（组卷/判卷/评估）的共同开发
 > 相关文档：`docs/library_api.md`（题库 API 速查）、`docs/exam_system_plan.md`（考试系统设计）
 
@@ -20,7 +20,7 @@
 | 公网 IP | `47.94.83.150` |
 | 系统 | 阿里云 ECS · Ubuntu 22.04 |
 | SSH 用户 | `root` |
-| SSH 密钥 | `C:/Users/MZK/.ssh/mathanchor_server`（**向马兆坤索取该密钥文件**，放到自己 `~/.ssh/`） |
+| SSH 密钥 | `~/.ssh/mathanchor_server`（**向管理员索取该密钥文件**，放到自己 `~/.ssh/`） |
 
 ### 连接命令
 ```bash
@@ -253,6 +253,6 @@ ssh root@your-domain.com 'cp /opt/mathanchor/library_questions.json /opt/mathanc
 ---
 
 ## 11. 联系
-- 交接人：马兆坤
+- 交接人：[待填写]
 - 出问题先看：`pm2 logs <服务>` + `nginx -t` + `curl https://your-domain.com/api/library/health`
 - 部署改动务必先备份（`cp ... .bak.日期`），能回滚

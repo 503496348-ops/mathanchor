@@ -11,14 +11,14 @@
 公钥指纹: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPGUjhbNaSZh80eti+GbmouQk3vSpPUOqL220BpjyhZB
 私钥位置: C:\Users\MZK\.ssh\id_ed25519
 公钥位置: C:\Users\MZK\.ssh\id_ed25519.pub
-GitHub 账户: mzk-C4
+GitHub 账户: [your-username]
 ```
 
 ## ✅ 已验证
 
 ```bash
 $ ssh -T git@github.com
-Hi mzk-C4! You've successfully authenticated, but GitHub does not provide shell access.
+Hi [your-username]! You've successfully authenticated, but GitHub does not provide shell access.
 ```
 
 ✅ SSH 认证已通过，可直接使用 `git@github.com:` 协议克隆/推送。
@@ -27,7 +27,7 @@ Hi mzk-C4! You've successfully authenticated, but GitHub does not provide shell 
 
 | 仓库 | SSH URL |
 |------|---------|
-| 数理锚点 | `git@github.com:mzk-C4/mathanchor.git` |
+| 数理锚点 | `git@github.com:503496348-ops/mathanchor.git` |
 | Auto-Generate-Changelog-with-LLM | `git@github.com:Qiyao-sudo/Auto-Generate-Changelog-with-LLM.git` |
 
 ## 🔧 切换现有仓库为 SSH 协议
@@ -39,7 +39,7 @@ Hi mzk-C4! You've successfully authenticated, but GitHub does not provide shell 
 git remote -v
 
 # 切换为 SSH
-git remote set-url origin git@github.com:mzk-C4/mathanchor.git
+git remote set-url origin git@github.com:503496348-ops/mathanchor.git
 
 # 验证
 git remote -v
@@ -49,13 +49,13 @@ git remote -v
 
 1. **使用 SSH 而非 HTTPS**：本机已配置好 SSH key，所有 git 操作都走 SSH 协议
 2. **无需登录**：SSH 认证已配置好，可直接 `git push` / `git pull`
-3. **多仓库用户**：当前 GitHub 用户是 `mzk-C4`（数理锚点）和 `Qiyao-sudo`（Auto-Generate-Changelog）
+3. **多仓库用户**：当前 GitHub 用户请替换为自己的用户名
 4. **如果遇到权限问题**：检查 `~/.ssh/config` 是否正确指向 `id_ed25519`
 
 ## 📝 SSH Config 推荐配置（其他 Agent 可参考）
 
 ```sshconfig
-# GitHub (mzk-C4)
+# GitHub ([your-username])
 Host github.com
     HostName github.com
     User git

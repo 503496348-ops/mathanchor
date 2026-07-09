@@ -65,7 +65,7 @@ GitHub 会自动使用以下内容生成社交预览：
 ### 测试链接
 
 ```
-https://www.opengraph.xyz/https://github.com/mzk-C4/mathanchor
+https://www.opengraph.xyz/https://github.com/503496348-ops/mathanchor
 ```
 
 ---
@@ -148,7 +148,7 @@ mkdir -p .github/images
   <a href="https://your-domain.com">官网</a> •
   <a href="https://your-domain.com/tech.html">技术文档</a> •
   <a href="https://www.bilibili.com/video/BV1EfLJ6bEnw/">演示视频</a> •
-  <a href="https://github.com/mzk-C4/mathanchor/issues">问题反馈</a>
+  <a href="https://github.com/503496348-ops/mathanchor/issues">问题反馈</a>
 </div>
 ```
 
@@ -217,7 +217,7 @@ git push -u origin main
 ![截图1](attachments/screenshots/screenshot-1.jpg)
 
 ---
-**完整更新日志**: [CHANGELOG.md](https://github.com/mzk-C4/mathanchor/blob/main/CHANGELOG.md)
+**完整更新日志**: [CHANGELOG.md](https://github.com/503496348-ops/mathanchor/blob/main/CHANGELOG.md)
 ```
 
 ---
@@ -242,7 +242,7 @@ git push -u origin main
 
 #Flutter #AI #MathEducation
 
-https://github.com/mzk-C4/mathanchor
+https://github.com/503496348-ops/mathanchor
 ```
 
 **LinkedIn:**
@@ -278,9 +278,9 @@ https://github.com/mzk-C4/mathanchor
 
 ```markdown
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
-![Stars](https://img.shields.io/github/stars/mzk-C4/mathanchor)
+![Stars](https://img.shields.io/github/stars/503496348-ops/mathanchor)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Issues](https://img.shields.io/github/issues/mzk-C4/mathanchor)
+![Issues](https://img.shields.io/github/issues/503496348-ops/mathanchor)
 ```
 
 ---
