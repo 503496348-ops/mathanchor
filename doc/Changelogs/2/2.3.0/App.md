@@ -44,7 +44,7 @@ v2.3.0
 
 #### 3. 服务器备份
 - **新增服务器备份目录**
-  - 目录：`server-backup/`
+  - 目录：已移除公开仓库中的服务器备份目录
   - 包含：Nginx 配置、Node.js 服务备份
 
 ### 🔧 功能优化
@@ -96,7 +96,7 @@ v2.3.0
 | `lib/services/prompts/geogebra_agent_prompt.dart` | GeoGebra Agent提示词 |
 | `docs/geochat_analysis.md` | GeoChat功能分析文档 |
 | `introduction.html` | 数理锚点介绍页面 |
-| `server-backup/*` | 服务器配置备份 |
+| 服务器配置备份 | 已从公开仓库移除 |
 
 ### 修改文件
 | 文件路径 | 说明 |

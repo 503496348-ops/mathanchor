@@ -35,10 +35,10 @@ flutter pub run flutter_launcher_icons
 应用依赖 `.env` 文件提供 API 密钥，不提供默认值。运行前必须在项目根目录创建 `.env`：
 
 ```bash
-DEEPSEEK_API_KEY=sk-your-deepseek-key
+DEEPSEEK_API_KEY=<your-deepseek-key>
 DEEPSEEK_MODEL_ID=deepseek-chat
 DEEPSEEK_BASE_URL=https://api.deepseek.com/chat/completions
-VIVO_API_KEY=sk-your-qwen-key
+VIVO_API_KEY=<your-qwen-key>
 VIVO_MODEL_ID=qwen-plus
 VIVO_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
 VOLC_API_KEY=your-volc-api-key

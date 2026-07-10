@@ -3,9 +3,12 @@ import requests
 from pathlib import Path
 from datetime import datetime
 
-API_KEY = "sk-7d21e797a5b54b89a29c6fc864f0899b"
+API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
 API_URL = "https://api.deepseek.com/chat/completions"
 MODEL = "deepseek-v4-flash"
+
+if not API_KEY:
+    raise RuntimeError("DEEPSEEK_API_KEY is required")
 
 main_version = "1.9"
 sub_version = "1.9.0"

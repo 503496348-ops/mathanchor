@@ -1,5 +1,5 @@
 $config = @"
-# GitHub (mzk-C4)
+# GitHub (MathAnchor)
 Host github.com
     HostName github.com
     User git

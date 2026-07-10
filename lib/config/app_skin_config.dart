@@ -11,7 +11,7 @@ class AppSkinConfig {
   static const String _fallbackVersion = '1.0.0';
   static const String _fallbackAuthApiBase = 'https://your-domain.com/api/auth';
   static const String _fallbackLibraryApiBase = 'https://your-domain.com/api/library';
-  static const String _fallbackGeogebraChatUrl = 'http://47.94.83.150:3003/chat';
+  static const String _fallbackGeogebraChatUrl = '';
   static const String _fallbackExportFilename = 'mathanchor_export';
   static const String _fallbackDeepseekBaseUrl = 'https://api.deepseek.com/v1';
   static const String _fallbackVolcBaseUrl = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';

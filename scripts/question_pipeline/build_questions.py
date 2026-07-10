@@ -19,9 +19,9 @@ import time
 import requests
 from dotenv import load_dotenv
 
-# ---- 加载 MathMate 的 .env（复用 DeepSeek 配置）----
-MATHMATE_DIR = r"D:\projects\MathMate"
-load_dotenv(os.path.join(MATHMATE_DIR, ".env"))
+# ---- 加载项目根目录的 .env（复用 DeepSeek 配置）----
+PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+load_dotenv(os.path.join(PROJECT_DIR, ".env"))
 
 API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
 MODEL_ID = os.getenv("DEEPSEEK_MODEL_ID", "").strip()

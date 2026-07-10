@@ -161,7 +161,7 @@ LIBRARY_API_BASE_URL=https://your-domain.com/api/library
 GEOGEBRA_CHAT_URL=https://example.com/api/geogebra/chat
 
 # DeepSeek API
-DEEPSEEK_API_KEY=sk-your-deepseek-api-key
+DEEPSEEK_API_KEY=<your-deepseek-api-key>
 DEEPSEEK_API_URL=https://api.deepseek.com
 DEEPSEEK_MODEL_ID=deepseek-chat
 DEEPSEEK_BASE_URL=https://api.deepseek.com/chat/completions

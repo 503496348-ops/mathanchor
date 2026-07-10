@@ -21,5 +21,5 @@
 
 ---
 **变更文件统计**: 9 files changed, 71 insertions(+), 49 deletions(-)
-**提交作者**: mzk-C4
+**提交作者**: MathAnchor Contributors
 **Git Tag**: v1.2.0

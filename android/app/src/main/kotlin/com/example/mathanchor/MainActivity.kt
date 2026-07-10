@@ -1,4 +1,4 @@
-package com.example.mathmate
+package com.example.mathanchor
 
 import io.flutter.embedding.android.FlutterActivity
 
