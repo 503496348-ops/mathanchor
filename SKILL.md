@@ -1,10 +1,19 @@
 ---
 name: mathanchor-brand-rebrand
-category: software-development
-version: v1.0
-status: active
-description: 数理锚点 到其他品牌的最小入侵改造（配置化皮肤化）技能记录
+description: "\u6570\u7406\u951A\u70B9 \u5230\u5176\u4ED6\u54C1\u724C\u7684\u6700\u5C0F\
+  \u5165\u4FB5\u6539\u9020\uFF08\u914D\u7F6E\u5316\u76AE\u80A4\u5316\uFF09\u6280\u80FD\
+  \u8BB0\u5F55"
+license: MIT
+metadata:
+  category: software-development
+  version: v1.0
+  status: active
+  governance_migrated_keys:
+  - category
+  - version
+  - status
 ---
+
 
 # 数理锚点 换皮改造技能
 
